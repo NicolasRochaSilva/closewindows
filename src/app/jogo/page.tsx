@@ -11,9 +11,10 @@ export default async function GamePage() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const [solves, ranking] = await Promise.all([
+  const [solves, ranking, user] = await Promise.all([
     prisma.solve.findMany({ where: { userId: session.id }, select: { puzzleId: true } }),
     getRanking(),
+    prisma.user.findUnique({ where: { id: session.id }, select: { lastPuzzleId: true } }),
   ]);
 
   return (
@@ -21,6 +22,7 @@ export default async function GamePage() {
       username={session.username}
       solvedIds={solves.map((s) => s.puzzleId)}
       ranking={ranking}
+      startId={user?.lastPuzzleId ?? null}
     />
   );
 }

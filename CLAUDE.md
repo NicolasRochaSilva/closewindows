@@ -299,7 +299,12 @@ Regras de borda:
   anterior/proxima (e as flechas do teclado funcionam). Com um unico puzzle,
   nao ha setas.
 - **RN-08** — O catalogo de puzzles vive no **codigo** (`registry.ts`), nao no
-  banco. O banco guarda jogadores e vitorias.
+  banco. O banco guarda jogadores, vitorias e onde cada um parou.
+- **RN-13** — O jogo lembra **em qual janela o jogador parou**
+  (`User.lastPuzzleId`). Cada troca de janela grava o id por
+  `POST /api/progress` (so aceita id do `registry.ts`); ao entrar, o palco abre
+  nessa janela. Id que saiu do catalogo cai na primeira janela. Quem grava e o
+  `Gallery`, nunca o puzzle.
 
 ## 9. Banco e ambiente
 

@@ -13,10 +13,12 @@ model User {
   username     String   @unique
   passwordHash String
   createdAt    DateTime @default(now())
+  /// Janela em que o jogador parou: o jogo reabre nela (RN-13). Nulo = primeira.
+  lastPuzzleId String?
   solves       Solve[]
 }
 
-/// Uma janela aberta por um jogador. `effort` e a foto do esforco do puzzle
+/// Uma janela fechada por um jogador. `effort` e a foto do esforco do puzzle
 /// no momento em que foi resolvido, para o ranking nao mudar se o manifest mudar.
 model Solve {
   id       String   @id @default(cuid())

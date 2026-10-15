@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import Logo from "./Logo";
@@ -16,11 +16,16 @@ type Props = {
   username: string;
   solvedIds: string[];
   ranking: RankRow[];
+  /** Janela em que o jogador parou (RN-13). */
+  startId: string | null;
 };
 
-export default function Gallery({ username, solvedIds, ranking }: Props) {
+export default function Gallery({ username, solvedIds, ranking, startId }: Props) {
   const router = useRouter();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() =>
+    Math.max(0, puzzles.findIndex((p) => p.id === startId)),
+  );
+  const savedId = useRef(startId);
   const [direction, setDirection] = useState(1);
   const [solved, setSolved] = useState(() => new Set(solvedIds));
   const [rows, setRows] = useState(ranking);
@@ -49,6 +54,17 @@ export default function Gallery({ username, solvedIds, ranking }: Props) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [go, many]);
+
+  /* RN-13: guarda a janela atual para reabrir nela no proximo acesso. */
+  useEffect(() => {
+    if (savedId.current === puzzle.id) return;
+    savedId.current = puzzle.id;
+    void fetch("/api/progress", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ puzzleId: puzzle.id }),
+    });
+  }, [puzzle.id]);
 
   useEffect(() => {
     if (!toast) return;

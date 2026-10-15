@@ -309,9 +309,14 @@ SESSION_SECRET  # 32 bytes aleatorios em hex
 ```
 
 - Copie `.env.example` para `.env`. `.env` **nunca** entra no git.
-- Alterou `prisma/schema.prisma`? Rode `npm run db:push` e descreva a mudanca
-  no PR. Nao renomeie nem apague coluna que ja tem dado em producao.
-- Deploy e Vercel, build `prisma generate && next build` (ja no `package.json`).
+- Alterou `prisma/schema.prisma`? Rode `npm run db:push` no seu banco local e
+  descreva a mudanca no PR. Nao renomeie nem apague coluna que ja tem dado em
+  producao.
+- Deploy e Vercel. A Vercel roda o script `vercel-build`:
+  `prisma generate`, depois `prisma db push` **so quando `VERCEL_ENV` e
+  `production`**, depois `next build`. Preview nunca mexe no banco, porque a
+  `DATABASE_URL` de Preview e a mesma de producao. Mudanca destrutiva (apagar
+  ou renomear coluna) faz o `db push` recusar e o deploy falhar — de proposito.
 
 ### Deploy (TRAVADO — so o dono)
 
@@ -322,7 +327,7 @@ SESSION_SECRET  # 32 bytes aleatorios em hex
 E deploy, e portanto so do dono:
 
 - `vercel.json` e `next.config.ts`
-- os scripts `build` e `postinstall` do `package.json`
+- os scripts `build`, `vercel-build` e `postinstall` do `package.json`
 - a versao de `next`, `react`, `react-dom`, `eslint-config-next`, `prisma` e
   `@prisma/client` (inclusive patch de seguranca)
 - `.env.example` e a lista de variaveis de ambiente

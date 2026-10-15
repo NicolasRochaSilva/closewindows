@@ -1,0 +1,314 @@
+/* Grade de arte: tudo multiplo de 4px. Arco em degraus, nunca border-radius. */
+.window {
+  position: relative;
+  width: 252px;
+  height: 472px;
+  transform-style: preserve-3d;
+}
+
+/* ---------- Arco de pedra, montado em blocos empilhados ---------- */
+.arch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 252px;
+  height: 72px;
+}
+
+.archRow {
+  position: absolute;
+  left: 50%;
+  height: 12px;
+  background: var(--stone);
+  box-shadow: inset 0 -4px 0 0 var(--stone-dark);
+}
+
+.archRow0 { top: 0; width: 72px; margin-left: -36px; }
+.archRow1 { top: 12px; width: 120px; margin-left: -60px; }
+.archRow2 { top: 24px; width: 160px; margin-left: -80px; }
+.archRow3 { top: 36px; width: 192px; margin-left: -96px; }
+.archRow4 { top: 48px; width: 220px; margin-left: -110px; }
+.archRow5 { top: 60px; width: 252px; margin-left: -126px; }
+
+/* Pedra-chave */
+.keystone {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 28px;
+  height: 40px;
+  margin-left: -14px;
+  background: var(--stone-dark);
+  box-shadow: inset 4px 4px 0 0 var(--stone);
+}
+
+.keystoneStud {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: var(--gold);
+  box-shadow: inset -4px -4px 0 0 var(--wood-shadow);
+}
+
+/* ---------- Vao ---------- */
+.opening {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  width: 252px;
+  height: 352px;
+  background: var(--stone);
+  box-shadow: inset -4px -4px 0 0 var(--stone-dark);
+}
+
+/* Paisagem vista pelo vao. overflow preso para nao vazar na pedra. */
+.sky {
+  position: absolute;
+  inset: 16px;
+  overflow: hidden;
+  background: var(--sky);
+  box-shadow: 0 0 0 4px var(--stone-dark);
+}
+
+.skyBand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44%;
+  background: var(--sky-deep);
+}
+
+.sun {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 24px;
+  height: 24px;
+  background: var(--sun);
+  box-shadow:
+    -8px 0 0 0 var(--sun),
+    8px 0 0 0 var(--sun),
+    0 -8px 0 0 var(--sun),
+    0 8px 0 0 var(--sun);
+}
+
+.hillBack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 64px;
+  height: 84px;
+  background: var(--hill);
+}
+
+.hillFront {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 68px;
+  background: var(--hill-dark);
+}
+
+.tower {
+  position: absolute;
+  bottom: 112px;
+  left: 36px;
+  width: 36px;
+  height: 84px;
+  background: var(--stone);
+  box-shadow: inset -4px 0 0 0 var(--stone-dark);
+}
+
+.towerTop {
+  position: absolute;
+  bottom: 196px;
+  left: 28px;
+  width: 52px;
+  height: 12px;
+  background: var(--stone-dark);
+}
+
+.towerWindow {
+  position: absolute;
+  bottom: 152px;
+  left: 48px;
+  width: 12px;
+  height: 20px;
+  background: var(--night);
+}
+
+/* ---------- A folha que abre ---------- */
+.leaf {
+  position: absolute;
+  top: 88px;
+  left: 16px;
+  width: 220px;
+  height: 320px;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  background: var(--wood);
+  box-shadow:
+    0 0 0 4px var(--wood-shadow),
+    inset 4px 4px 0 0 var(--wood-light),
+    inset -4px -4px 0 0 var(--wood-dark);
+}
+
+/* O verso da folha e madeira limpa: vidro e caixilho somem ao girar. */
+.pane {
+  position: absolute;
+  inset: 20px;
+  backface-visibility: hidden;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 4px var(--wood-shadow);
+}
+
+/* Brilho do vidro em blocos duros, nunca gradiente. */
+.shine {
+  position: absolute;
+  backface-visibility: hidden;
+  background: var(--glass-light);
+}
+
+.shineA {
+  top: 16px;
+  left: 16px;
+  width: 36px;
+  height: 96px;
+}
+
+.shineB {
+  top: 60px;
+  left: 60px;
+  width: 16px;
+  height: 56px;
+  background: var(--glass-shine);
+}
+
+.shineC {
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 116px;
+  background: var(--glass-deep);
+}
+
+/* Caixilho em cruz */
+.mullionV,
+.mullionH {
+  position: absolute;
+  backface-visibility: hidden;
+  background: var(--wood-dark);
+}
+
+.mullionV {
+  top: 20px;
+  bottom: 20px;
+  left: 50%;
+  width: 12px;
+  margin-left: -6px;
+  box-shadow: inset 4px 0 0 0 var(--wood-mid);
+}
+
+.mullionH {
+  left: 20px;
+  right: 20px;
+  top: 50%;
+  height: 12px;
+  margin-top: -6px;
+  box-shadow: inset 0 4px 0 0 var(--wood-mid);
+}
+
+/* Dobradicas de ferro na borda esquerda */
+.hinge {
+  position: absolute;
+  left: -8px;
+  width: 36px;
+  height: 20px;
+  background: var(--iron-dark);
+  box-shadow:
+    inset 0 4px 0 0 var(--iron-light),
+    inset -4px 0 0 0 var(--iron);
+}
+
+.hingeTop { top: 44px; }
+.hingeBottom { bottom: 44px; }
+
+/* ---------- Trinco ---------- */
+.latch {
+  position: absolute;
+  backface-visibility: hidden;
+  top: 50%;
+  right: 0;
+  z-index: 3;
+  width: 56px;
+  height: 80px;
+  margin-top: -40px;
+  background: none;
+}
+
+.latchPlate {
+  position: absolute;
+  top: 16px;
+  right: 8px;
+  width: 28px;
+  height: 48px;
+  background: var(--iron-dark);
+  box-shadow:
+    inset 4px 4px 0 0 var(--iron-light),
+    inset -4px -4px 0 0 var(--wood-shadow);
+}
+
+.latchStud {
+  position: absolute;
+  top: 24px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  box-shadow: inset -4px -4px 0 0 var(--wood-shadow);
+}
+
+.latchBar {
+  position: absolute;
+  top: 34px;
+  right: 2px;
+  width: 48px;
+  height: 12px;
+  transform-origin: 42px 6px;
+  background: var(--iron);
+  box-shadow:
+    inset 0 4px 0 0 var(--iron-light),
+    0 0 0 4px var(--wood-shadow);
+}
+
+.latch:focus-visible .latchPlate {
+  box-shadow:
+    0 0 0 4px var(--gold-light),
+    inset 4px 4px 0 0 var(--iron-light);
+}
+
+/* Peitoril */
+.sill {
+  position: absolute;
+  top: 424px;
+  left: -12px;
+  right: -12px;
+  height: 16px;
+  background: var(--stone-dark);
+  box-shadow: inset 0 4px 0 0 var(--stone);
+}
+
+.hint {
+  position: absolute;
+  top: 456px;
+  left: 50%;
+  font-size: 9px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  color: var(--wood);
+}

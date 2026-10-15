@@ -1,0 +1,128 @@
+.screen {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px clamp(16px, 4vw, 40px) 40px;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10px;
+  color: var(--wood);
+}
+
+.whoName {
+  color: var(--wood-dark);
+}
+
+.logout {
+  padding: 8px 12px;
+  font-size: 9px;
+}
+
+.body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding-top: 10px;
+}
+
+.stageRow {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 28px);
+}
+
+.slot {
+  position: relative;
+  display: grid;
+  width: min(100%, 460px);
+  min-height: 500px;
+  place-items: center;
+  /* A perspectiva vive aqui: todo puzzle que abre para frente herda dela. */
+  perspective: 1100px;
+  perspective-origin: 50% 45%;
+}
+
+.plaque {
+  width: min(100%, 460px);
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.plaqueName {
+  font-family: var(--font-title);
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--paper);
+  text-shadow: 3px 3px 0 var(--wood-shadow);
+}
+
+.plaqueMeta {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  font-size: 9px;
+  color: var(--wood-highlight);
+}
+
+.plaqueEffort {
+  color: var(--gold-light);
+}
+
+.sealed {
+  color: var(--glass-light);
+}
+
+.counter {
+  font-size: 9px;
+  color: var(--wood);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 20;
+  padding: 14px 20px;
+  font-size: 11px;
+  color: var(--paper);
+  background: var(--wood);
+  box-shadow:
+    0 0 0 var(--px) var(--wood-shadow),
+    inset var(--px) var(--px) 0 0 var(--wood-highlight);
+}
+
+.toastEffort {
+  color: var(--gold-light);
+}

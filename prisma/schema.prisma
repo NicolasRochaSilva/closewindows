@@ -1,0 +1,31 @@
+// closeWindows — schema. Ver CLAUDE.md antes de alterar.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  solves       Solve[]
+}
+
+/// Uma janela aberta por um jogador. `effort` e a foto do esforco do puzzle
+/// no momento em que foi resolvido, para o ranking nao mudar se o manifest mudar.
+model Solve {
+  id       String   @id @default(cuid())
+  userId   String
+  puzzleId String
+  effort   Int
+  solvedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, puzzleId])
+  @@index([userId])
+}

@@ -1,0 +1,199 @@
+/* closeWindows — design tokens. NAO use cor fora destas variaveis (CLAUDE.md). */
+:root {
+  /* O fundo e SEMPRE branco. Regra travada. */
+  --paper: #ffffff;
+
+  /* Madeira */
+  --wood-shadow: #30190a;
+  --wood-dark: #4a2c15;
+  --wood: #7a4a21;
+  --wood-mid: #8f5a2a;
+  --wood-light: #a9713a;
+  --wood-highlight: #c98f52;
+
+  /* Vidro medieval */
+  --glass-deep: #4a90b8;
+  --glass: #8ecae6;
+  --glass-light: #bde0f3;
+  --glass-shine: #e8f6fd;
+
+  /* Metal e ouro */
+  --iron-dark: #2f2f38;
+  --iron: #585867;
+  --iron-light: #8d8d9e;
+  --gold: #d9a43b;
+  --gold-light: #f2cc6b;
+
+  --ink: #2b1a0e;
+  --blood: #8e2b1f;
+
+  --px: 4px;
+  --font-title: var(--font-title-loaded), "Jacquard 12", serif;
+  --font-ui: var(--font-ui-loaded), "Press Start 2P", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.8;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+}
+
+img,
+svg {
+  image-rendering: pixelated;
+  shape-rendering: crispEdges;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* ---------- Primitivas pixeladas ---------- */
+
+/* Moldura de madeira em degraus de 4px, sem border-radius nem gradiente suave. */
+.pixel-panel {
+  position: relative;
+  background: var(--wood);
+  box-shadow:
+    0 0 0 var(--px) var(--wood-dark),
+    0 0 0 calc(var(--px) * 2) var(--wood-shadow),
+    inset var(--px) var(--px) 0 0 var(--wood-light),
+    inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 var(--wood-dark);
+}
+
+.pixel-parchment {
+  background: var(--paper);
+  box-shadow:
+    0 0 0 var(--px) var(--wood-dark),
+    0 0 0 calc(var(--px) * 2) var(--wood-shadow);
+}
+
+.pixel-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  color: var(--paper);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--wood);
+  box-shadow:
+    0 0 0 var(--px) var(--wood-shadow),
+    inset var(--px) var(--px) 0 0 var(--wood-highlight),
+    inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 var(--wood-dark),
+    0 var(--px) 0 0 var(--wood-shadow);
+  transition: none;
+}
+
+.pixel-btn:hover:not(:disabled) {
+  background: var(--wood-mid);
+}
+
+/* Botao pixelado nao anima: ele "afunda" 4px de uma vez. */
+.pixel-btn:active:not(:disabled) {
+  transform: translateY(var(--px));
+  box-shadow:
+    0 0 0 var(--px) var(--wood-shadow),
+    inset var(--px) var(--px) 0 0 var(--wood-dark),
+    inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 var(--wood-highlight);
+}
+
+.pixel-btn:disabled {
+  cursor: not-allowed;
+  background: var(--iron);
+  box-shadow:
+    0 0 0 var(--px) var(--iron-dark),
+    0 var(--px) 0 0 var(--iron-dark);
+}
+
+.pixel-input {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: none;
+  outline: none;
+  box-shadow:
+    0 0 0 var(--px) var(--wood-dark),
+    inset var(--px) var(--px) 0 0 rgba(48, 25, 10, 0.25);
+}
+
+.pixel-input:focus {
+  box-shadow:
+    0 0 0 var(--px) var(--wood-dark),
+    0 0 0 calc(var(--px) * 2) var(--glass),
+    inset var(--px) var(--px) 0 0 rgba(48, 25, 10, 0.25);
+}
+
+.pixel-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--wood-dark);
+}
+
+.pixel-error {
+  padding: 8px 10px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--paper);
+  background: var(--blood);
+  box-shadow: 0 0 0 var(--px) var(--wood-shadow);
+}
+
+.title {
+  font-family: var(--font-title);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Cenario (o que se ve atraves do vidro) ---------- */
+:root {
+  --sky: #bde0f3;
+  --sky-deep: #8ecae6;
+  --sun: #f2cc6b;
+  --hill: #5c7a3a;
+  --hill-dark: #3d5526;
+  --stone: #9a9a8c;
+  --stone-dark: #6f6f63;
+  --night: #1b2440;
+}

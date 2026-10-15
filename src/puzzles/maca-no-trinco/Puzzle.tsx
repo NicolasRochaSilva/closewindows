@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useAnimate } from "motion/react";
+import { motion, useAnimate, useMotionValue } from "motion/react";
 import type { PuzzleProps } from "../types";
 import {
   DURATION,
   EASE_HINGE,
   EASE_WOOD,
   bump,
+  dash,
   drop,
   hingeClose,
   hingeOpen,
@@ -17,7 +18,9 @@ import {
 import { sfx } from "@/lib/sfx";
 import styles from "./Puzzle.module.css";
 
-/* Angulos das folhas abertas para fora (a camera e a do palco). */
+/* Angulos das folhas abertas para fora (a camera e a do palco).
+   Pose inicial vai em MotionValue no `style`, nao em `initial`: o palco monta
+   com AnimatePresence initial={false}, que ignora `initial` na primeira janela. */
 const LEFT_OPEN = -104;
 const RIGHT_OPEN = 104;
 const LEFT_BUMP = -28;
@@ -35,7 +38,7 @@ const APPLE_FLOOR = 480;
 
 /**
  * A maca no trinco. A janela quadrada comeca aberta, com as duas folhas para
- * fora. Um boneco de mochila passa na rua e joga uma maca no trinco: com ela
+ * fora. Um boneco de mochila chega correndo pela rua e joga uma maca no trinco: com ela
  * ali, nenhuma folha fecha. O jogador tira a maca e fecha a esquerda e depois
  * a direita (a direita fecha por cima) antes que o boneco volte com outra.
  * Fechou a direita primeiro? A esquerda emperra: reabra a direita.
@@ -48,6 +51,15 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
   const kidRef = useRef<HTMLDivElement>(null);
   const armRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
+
+  /* Poses iniciais como MotionValue: sobrevivem a re-render e ao palco. */
+  const leftTurn = useMotionValue(LEFT_OPEN);
+  const rightTurn = useMotionValue(RIGHT_OPEN);
+  const barTurn = useMotionValue(-90);
+  const appleX = useMotionValue(APPLE_X[0]);
+  const appleY = useMotionValue(APPLE_Y[0]);
+  const appleOpacity = useMotionValue(0);
+  const kidX = useMotionValue(KID_FROM);
 
   const [leftShut, setLeftShut] = useState(false);
   const [rightShut, setRightShut] = useState(false);
@@ -65,7 +77,11 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
   const gestured = useRef(false);
   const release = useRef<(() => void) | null>(null);
 
-  /* Cena do boneco: entra, joga a maca, sai e so volta quando ela cai. */
+  /* O boneco age sozinho: so faz barulho depois de um gesto do jogador na
+     pagina (trocar de janela conta), nunca no carregamento. */
+  const canSound = () => gestured.current || navigator.userActivation?.hasBeenActive === true;
+
+  /* Cena do boneco: entra correndo, joga a maca, sai e so volta quando ela cai. */
   useEffect(() => {
     let alive = true;
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -73,7 +89,6 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
       new Promise<void>((resolve) => timers.push(setTimeout(resolve, seconds * 1000)));
 
     async function scene() {
-      await pause(DURATION.base);
       while (alive && !wonRef.current) {
         const kid = kidRef.current;
         const apple = appleRef.current;
@@ -82,7 +97,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
 
         setCarrying(true);
         setWalking(true);
-        await animate(kid, { x: [KID_FROM, KID_STOP] }, stroll);
+        await animate(kid, { x: [KID_FROM, KID_STOP] }, dash);
         if (!alive) return;
         if (wonRef.current) {
           await animate(kid, { x: KID_TO }, stroll);
@@ -92,6 +107,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         setWalking(false);
         void animate(arm, { rotate: [0, -150, 0] }, { duration: DURATION.toss, ease: EASE_WOOD });
         setCarrying(false);
+        if (canSound()) sfx.toss();
         await animate(
           apple,
           { x: APPLE_X, y: APPLE_Y, rotate: [0, 200, 360], opacity: 1 },
@@ -105,7 +121,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         } else {
           stuckRef.current = true;
           setAppleStuck(true);
-          if (gestured.current) sfx.plop();
+          if (canSound()) sfx.plop();
         }
 
         setWalking(true);
@@ -223,7 +239,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         ref={leftRef}
         type="button"
         className={`${styles.leaf} ${styles.leafLeft}`}
-        initial={{ rotateY: LEFT_OPEN }}
+        style={{ rotateY: leftTurn }}
         onClick={closeLeft}
         disabled={leftShut || won}
         aria-label={leftShut ? "Folha esquerda fechada" : "Fechar a folha esquerda"}
@@ -240,7 +256,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         ref={rightRef}
         type="button"
         className={`${styles.leaf} ${styles.leafRight}`}
-        initial={{ rotateY: RIGHT_OPEN }}
+        style={{ rotateY: rightTurn }}
         onClick={toggleRight}
         disabled={won}
         aria-label={
@@ -251,7 +267,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
           <span className={styles.shine} />
         </span>
         <span className={styles.overlap} />
-        <motion.span ref={barRef} className={styles.bar} initial={{ rotate: -90 }} />
+        <motion.span ref={barRef} className={styles.bar} style={{ rotate: barTurn }} />
         <span className={`${styles.hinge} ${styles.hingeRightTop}`} />
         <span className={`${styles.hinge} ${styles.hingeRightBottom}`} />
       </motion.button>
@@ -262,10 +278,15 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         ref={appleRef}
         type="button"
         className={styles.apple}
-        initial={{ x: APPLE_X[0], y: APPLE_Y[0], z: 16, opacity: 0 }}
         onClick={takeApple}
         disabled={!appleStuck}
-        style={{ pointerEvents: appleStuck ? "auto" : "none" }}
+        style={{
+          x: appleX,
+          y: appleY,
+          z: 16,
+          opacity: appleOpacity,
+          pointerEvents: appleStuck ? "auto" : "none",
+        }}
         aria-label="Tirar a maca do trinco"
       >
         <AppleSprite />
@@ -275,7 +296,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         <motion.div
           ref={kidRef}
           className={`${styles.kid} ${walking ? styles.walking : ""}`}
-          initial={{ x: KID_FROM }}
+          style={{ x: kidX }}
           aria-hidden
         >
           <KidSprite />

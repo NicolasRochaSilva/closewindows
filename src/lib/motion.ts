@@ -11,6 +11,7 @@ export const DURATION = {
   swing: 0.9,
   /* Ritmo de cena: correm ao fundo e nunca seguram a interface. */
   toss: 0.6,
+  dash: 0.7,
   rearm: 1.2,
   stroll: 1.6,
 } as const;
@@ -32,6 +33,9 @@ export const bump: Transition = { duration: DURATION.base, ease: EASE_WOOD, time
 
 /** Boneco andando: passo constante, sem acelerar. */
 export const stroll: Transition = { duration: DURATION.stroll, ease: "linear" };
+
+/** Boneco chegando correndo: entra rapido e freia no ponto de arremesso. */
+export const dash: Transition = { duration: DURATION.dash, ease: EASE_WOOD };
 
 /** Arremesso em arco: sobe rapido, desce assentando. */
 export const tossArc: Transition = { duration: DURATION.toss, ease: "easeOut", times: [0, 0.55, 1] };

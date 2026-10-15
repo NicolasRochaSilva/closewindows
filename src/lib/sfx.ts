@@ -127,6 +127,31 @@ export const sfx = {
     ping(ctx, "triangle", 150, 55, 0.16, 0.22);
   },
 
+  /** Algo arremessado cortando o ar: ruido varrendo de grave para agudo. */
+  toss() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const seconds = 0.22;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, seconds);
+
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 3;
+    band.frequency.setValueAtTime(500, now);
+    band.frequency.exponentialRampToValueAtTime(2600, now + seconds);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+
+    source.connect(band).connect(gain).connect(ctx.destination);
+    source.start(now);
+  },
+
   /** Fruta batendo na madeira. */
   plop() {
     const ctx = audio();

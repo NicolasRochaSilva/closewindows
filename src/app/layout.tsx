@@ -18,7 +18,7 @@ const ui = Press_Start_2P({
 
 export const metadata: Metadata = {
   title: "closeWindows",
-  description: "Feche as janelas do vilarejo. Um jogo colaborativo de puzzles em 16 bits.",
+  description: "Feche todas as janelas. Um jogo colaborativo de puzzles em 16 bits, de estilo medieval.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -19,7 +19,7 @@ export default function RankingBoard({ rows, username }: Props) {
         <p className={styles.empty}>
           Nenhuma janela foi fechada ainda.
           <br />
-          Seja o primeiro do vilarejo.
+          Seja o primeiro.
         </p>
       ) : (
         <ol className={styles.list}>

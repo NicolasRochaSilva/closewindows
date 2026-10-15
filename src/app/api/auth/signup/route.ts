@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     select: { id: true },
   });
   if (taken) {
-    return NextResponse.json({ error: "Esse nome ja foi tomado no vilarejo" }, { status: 409 });
+    return NextResponse.json({ error: "Esse nome ja foi tomado" }, { status: 409 });
   }
 
   const user = await prisma.user.create({

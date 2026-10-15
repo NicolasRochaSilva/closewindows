@@ -12,18 +12,18 @@ type Mode = "login" | "signup";
 
 const COPY = {
   login: {
-    heading: "Entrar no vilarejo",
-    submit: "Abrir o portao",
+    heading: "Entrar",
+    submit: "Entrar",
     endpoint: "/api/auth/login",
     switchText: "Ainda nao tem nome por aqui?",
     switchHref: "/cadastro",
     switchLabel: "criar conta",
   },
   signup: {
-    heading: "Novo morador",
+    heading: "Novo fechador",
     submit: "Firmar o nome",
     endpoint: "/api/auth/signup",
-    switchText: "Ja e do vilarejo?",
+    switchText: "Ja tem conta?",
     switchHref: "/login",
     switchLabel: "entrar",
   },
@@ -76,7 +76,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...panelIn, delay: 0.05 }}
       >
-        <Logo size={64} tagline="feche as janelas do vilarejo" />
+        <Logo size={64} tagline="feche todas as janelas" />
       </motion.div>
 
       <motion.div

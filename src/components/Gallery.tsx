@@ -89,7 +89,7 @@ export default function Gallery({ username, solvedIds, ranking }: Props) {
         <Logo size={34} />
         <div className={styles.who}>
           <span>
-            morador <span className={styles.whoName}>{username}</span>
+            fechador <span className={styles.whoName}>{username}</span>
           </span>
           <button
             type="button"

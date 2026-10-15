@@ -27,6 +27,8 @@
 | Nome | `closeWindows` — sempre essa grafia, `c` minusculo e `W` maiusculo |
 | Letreiro | `close` + **janela** + `Windows`, nessa ordem, com a janela no meio |
 | Fundo | **branco puro** (`--paper`) em toda e qualquer tela |
+| Tema | **fechar a janela** — um meme interno. Medieval e so o estilo |
+| Quem joga | **fechador** (nunca morador, aldeao, cidadao) |
 | Estilo da moldura | pixel art 16 bits, medieval |
 | Estilo da janela | livre por puzzle (ver 6.1) |
 | Idioma da interface | pt-BR, sem acento em identificador de codigo |
@@ -34,6 +36,10 @@
 - O logo vive em `src/components/Logo.tsx` e a janela do letreiro em
   `src/components/WindowGlyph.tsx`. **Nao reescreva nenhum dos dois** num PR de
   puzzle. Mudanca de marca e PR separado.
+- O jogo **nao tem cenario narrativo**: nada de vilarejo, aldeia, reino, castelo
+  ou moradores em texto, nome de puzzle ou mensagem. O medieval esta no
+  desenho e na fonte, nao na historia. Todo texto gira em torno de fechar a
+  janela.
 - Nunca troque o fundo branco por escuro, textura, imagem ou gradiente — nem
   "so na minha tela". O branco e o que faz a madeira e o vidro aparecerem.
 
@@ -232,7 +238,7 @@ quem a fez.
 ```ts
 export const manifest: PuzzleManifest = {
   id: "trinco-simples",      // igual ao nome da pasta, imutavel depois do merge
-  name: "O Trinco do Vilarejo",
+  name: "O Trinco Simples",
   author: "SeuHandleDoGitHub",
   effort: 0,                 // NAO preencha voce — ver secao 7
   order: 0,                  // proximo numero livre
@@ -275,8 +281,8 @@ Regras de borda:
 - **RN-01** — Cadastro e so `username` + `senha`. Sem e-mail, sem confirmacao,
   sem recuperacao de senha.
 - **RN-02** — `username` e **unico, sem diferenciar maiuscula de minuscula**:
-  se existe `Nicolas`, `nicolas` e recusado com "Esse nome ja foi tomado no
-  vilarejo". 3 a 20 caracteres, `[a-zA-Z0-9_]`. Senha de 6 a 72 caracteres,
+  se existe `Nicolas`, `nicolas` e recusado com "Esse nome ja foi tomado".
+  3 a 20 caracteres, `[a-zA-Z0-9_]`. Senha de 6 a 72 caracteres,
   guardada so como hash `bcrypt` (custo 10). **Nunca** logue nem devolva hash.
 - **RN-03** — Sessao e cookie `cw_session` `httpOnly`, JWT HS256 assinado com
   `SESSION_SECRET`, 30 dias. `/jogo` exige sessao; `/login` e `/cadastro` com

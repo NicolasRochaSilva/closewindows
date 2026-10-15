@@ -1,7 +1,12 @@
 /* closeWindows — design tokens. NAO use cor fora destas variaveis (CLAUDE.md). */
 :root {
-  /* O fundo e SEMPRE branco. Regra travada. */
+  /* Papel branco: tambem e a cor do texto claro sobre madeira. */
   --paper: #ffffff;
+
+  /* Fundo da pagina segue o tema (CLAUDE.md secao 1). Claro: branco. */
+  --bg: var(--paper);
+  --bg-ink: var(--ink);
+  --bg-ink-soft: var(--wood);
 
   /* Madeira */
   --wood-shadow: #30190a;
@@ -48,8 +53,8 @@ body {
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--bg-ink);
   font-family: var(--font-ui);
   font-size: 12px;
   line-height: 1.8;
@@ -200,4 +205,22 @@ button {
   --stone: #9a9a8c;
   --stone-dark: #6f6f63;
   --night: #1b2440;
+  --star: #e8f6fd;
+  --window-lit: #f2cc6b;
+}
+
+/* ---------- Tema escuro (padrao): fundo de noite, cenario de noite ----------
+   O claro e o :root acima. Troca pelo atributo data-theme no <html>. */
+:root[data-theme="dark"] {
+  --bg: #16131f;
+  --bg-ink: var(--wood-highlight);
+  --bg-ink-soft: var(--wood-light);
+
+  --sky: #24305c;
+  --sky-deep: #141c3b;
+  --sun: #e8e4c9;
+  --hill: #2f4224;
+  --hill-dark: #1f2c17;
+  --stone: #77776c;
+  --stone-dark: #4f4f46;
 }

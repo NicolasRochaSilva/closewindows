@@ -70,6 +70,33 @@
   background: var(--hill-dark);
 }
 
+/* ---------- Noite (tema escuro): lua, estrelas ---------- */
+.stars {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  width: 4px;
+  height: 4px;
+  background: var(--star);
+  box-shadow:
+    36px 20px 0 0 var(--star),
+    72px 4px 0 0 var(--star),
+    104px 32px 0 0 var(--star),
+    20px 52px 0 0 var(--star),
+    132px 12px 0 0 var(--star),
+    60px 44px 0 0 var(--star);
+}
+
+:global([data-theme="dark"]) .stars {
+  display: block;
+}
+
+/* Lua crescente: o sol sem raios, com uma mordida da cor do ceu. */
+:global([data-theme="dark"]) .sun {
+  box-shadow: inset -8px -4px 0 0 var(--sky-deep);
+}
+
 /* ---------- Folhas: abrem para fora, comecam abertas ---------- */
 .leaf {
   position: absolute;
@@ -237,15 +264,63 @@
   box-shadow: inset 4px 0 0 0 var(--wood-mid);
 }
 
-/* Chama em blocos: o tremor e laco decorativo, por isso @keyframes. */
+/* Chama em blocos: o tremor e laco decorativo, por isso @keyframes.
+   Dentro da janela o estilo e livre (6.1): o desfoque e permitido aqui. */
 .flame {
+  display: none;
   position: absolute;
   top: 0;
   left: 4px;
   width: 24px;
   height: 32px;
   background: var(--flame);
+  filter: blur(1px);
   animation: flicker 0.48s steps(1) infinite;
+}
+
+/* Brilho da chama: halo desfocado que pulsa. */
+.glow {
+  display: none;
+  position: absolute;
+  top: -20px;
+  left: -16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--flame);
+  opacity: 0.5;
+  filter: blur(14px);
+  animation: glow 1.2s ease-in-out infinite alternate;
+}
+
+/* Ponta queimada da tocha apagada (tema claro). */
+.ash {
+  position: absolute;
+  top: 20px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  background: var(--wood-shadow);
+}
+
+:global([data-theme="dark"]) .flame,
+:global([data-theme="dark"]) .glow {
+  display: block;
+}
+
+:global([data-theme="dark"]) .ash {
+  display: none;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
 }
 
 .flameCore {
@@ -365,5 +440,5 @@
   font-size: 9px;
   white-space: nowrap;
   transform: translateX(-50%);
-  color: var(--wood);
+  color: var(--bg-ink-soft);
 }

@@ -229,6 +229,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
       <div className={styles.frame}>
         <div className={styles.view}>
           <div className={styles.skyBand} />
+          <div className={styles.stars} />
           <div className={styles.sun} />
           <div className={styles.hillBack} />
           <div className={styles.hillFront} />
@@ -321,13 +322,16 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
   );
 }
 
+/* Tocha: acesa no tema escuro (chama com brilho desfocado), apagada no claro. */
 function Torch({ side }: { side: "left" | "right" }) {
   return (
     <span className={`${styles.torch} ${side === "left" ? styles.torchLeft : styles.torchRight}`}>
+      <span className={styles.glow} />
       <span className={styles.flame}>
         <span className={styles.flameCore} />
       </span>
       <span className={styles.stick} />
+      <span className={styles.ash} />
       <span className={styles.sconce} />
     </span>
   );

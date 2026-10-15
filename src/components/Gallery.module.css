@@ -19,11 +19,11 @@
   align-items: center;
   gap: 14px;
   font-size: 10px;
-  color: var(--wood);
+  color: var(--bg-ink-soft);
 }
 
 .whoName {
-  color: var(--wood-dark);
+  color: var(--bg-ink);
 }
 
 .logout {
@@ -106,7 +106,7 @@
 
 .counter {
   font-size: 9px;
-  color: var(--wood);
+  color: var(--bg-ink-soft);
 }
 
 .toast {

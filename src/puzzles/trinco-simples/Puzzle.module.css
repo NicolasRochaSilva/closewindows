@@ -142,6 +142,38 @@
   background: var(--night);
 }
 
+/* ---------- Noite (tema escuro): lua, estrelas ---------- */
+.stars {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  width: 4px;
+  height: 4px;
+  background: var(--star);
+  box-shadow:
+    36px 20px 0 0 var(--star),
+    72px 4px 0 0 var(--star),
+    104px 32px 0 0 var(--star),
+    20px 52px 0 0 var(--star),
+    132px 12px 0 0 var(--star),
+    60px 44px 0 0 var(--star);
+}
+
+:global([data-theme="dark"]) .stars {
+  display: block;
+}
+
+/* Lua crescente: o sol sem raios, com uma mordida da cor do ceu. */
+:global([data-theme="dark"]) .sun {
+  box-shadow: inset -8px -4px 0 0 var(--sky-deep);
+}
+
+/* A janela da torre acende a noite. */
+:global([data-theme="dark"]) .towerWindow {
+  background: var(--window-lit);
+}
+
 /* ---------- A folha: comeca aberta e fecha ---------- */
 .leaf {
   position: absolute;
@@ -325,5 +357,5 @@
   font-size: 9px;
   white-space: nowrap;
   transform: translateX(-50%);
-  color: var(--wood);
+  color: var(--bg-ink-soft);
 }

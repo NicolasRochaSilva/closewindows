@@ -21,9 +21,20 @@ export const metadata: Metadata = {
   description: "Feche todas as janelas. Um jogo colaborativo de puzzles em 16 bits, de estilo medieval.",
 };
 
+/* Roda antes da primeira pintura: aplica o tema salvo (padrao escuro). */
+const THEME_SCRIPT = `try{var t=localStorage.getItem("cw_theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${title.variable} ${ui.variable}`}>
+    <html
+      lang="pt-BR"
+      data-theme="dark"
+      className={`${title.variable} ${ui.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>{children}</body>
     </html>
   );

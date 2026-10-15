@@ -34,6 +34,7 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
       <div className={styles.opening}>
         <div className={styles.sky}>
           <div className={styles.skyBand} />
+          <div className={styles.stars} />
           <div className={styles.sun} />
           <div className={styles.towerTop} />
           <div className={styles.tower} />

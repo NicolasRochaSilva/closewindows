@@ -10,6 +10,7 @@ import { puzzles } from "@/puzzles/registry";
 import type { RankRow } from "@/lib/ranking";
 import { DURATION, EASE_WOOD, panelIn } from "@/lib/motion";
 import { sfx } from "@/lib/sfx";
+import { applyTheme, currentTheme, type Theme } from "@/lib/theme";
 import styles from "./Gallery.module.css";
 
 type Props = {
@@ -31,8 +32,10 @@ export default function Gallery({ username, solvedIds, ranking, startId }: Props
   const [rows, setRows] = useState(ranking);
   const [toast, setToast] = useState<{ name: string; effort: number } | null>(null);
   const [muted, setMuted] = useState(false);
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => setMuted(sfx.isMuted()), []);
+  useEffect(() => setTheme(currentTheme()), []);
 
   const puzzle = puzzles[index];
   const many = puzzles.length > 1;
@@ -120,6 +123,18 @@ export default function Gallery({ username, solvedIds, ranking, startId }: Props
             }}
           >
             som {muted ? "off" : "on"}
+          </button>
+          <button
+            type="button"
+            className={`pixel-btn ${styles.logout}`}
+            aria-label={theme === "dark" ? "Trocar para o tema claro" : "Trocar para o tema escuro"}
+            onClick={() => {
+              const next: Theme = theme === "dark" ? "light" : "dark";
+              applyTheme(next);
+              setTheme(next);
+            }}
+          >
+            {theme === "dark" ? "noite" : "dia"}
           </button>
           <button type="button" className={`pixel-btn ${styles.logout}`} onClick={logout}>
             sair

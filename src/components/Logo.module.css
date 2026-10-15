@@ -18,6 +18,15 @@
     3px 3px 0 var(--wood-shadow);
 }
 
+/* Tema escuro: a madeira clareia para o letreiro nao sumir no fundo. */
+:global([data-theme="dark"]) .word {
+  color: var(--wood-highlight);
+  text-shadow:
+    3px 0 0 var(--wood),
+    0 3px 0 var(--wood),
+    3px 3px 0 var(--wood-shadow);
+}
+
 .glyph {
   margin: 0 0.06em;
   /* O vidro brilha de leve, sem sair do ritmo de 16 bits. */
@@ -43,5 +52,5 @@
   font-size: 10px;
   text-align: center;
   letter-spacing: 1px;
-  color: var(--wood);
+  color: var(--bg-ink-soft);
 }

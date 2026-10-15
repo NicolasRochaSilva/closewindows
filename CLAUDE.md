@@ -9,7 +9,7 @@
 >
 > Leia a divisao antes de tudo:
 >
-> - **A moldura e travada.** Logo, fundo branco, painel, placa, setas, ranking,
+> - **A moldura e travada.** Logo, fundo do tema, painel, placa, setas, ranking,
 >   topo: pixel art 16 bits medieval, sem excecao.
 > - **A janela e livre.** Dentro do palco do puzzle, cada dev escolhe o estilo —
 >   16 bits como a primeira, 3D, vetorial, o que quiser. Ver **6.1**.
@@ -26,7 +26,8 @@
 | --- | --- |
 | Nome | `closeWindows` — sempre essa grafia, `c` minusculo e `W` maiusculo |
 | Letreiro | `close` + **janela** + `Windows`, nessa ordem, com a janela no meio |
-| Fundo | **branco puro** (`--paper`) em toda e qualquer tela |
+| Fundo | **segue o tema**: escuro (`--bg` de noite) e o padrao; claro inverte para branco puro |
+| Tema | botao `noite`/`dia` no topo do jogo, salvo no `localStorage` (`src/lib/theme.ts`) |
 | Tema | **fechar a janela** — um meme interno. Medieval e so o estilo |
 | Estado inicial | **toda janela comeca aberta**; vencer e fecha-la (ver 6, Contrato) |
 | Quem joga | **fechador** (nunca morador, aldeao, cidadao) |
@@ -41,8 +42,13 @@
   ou moradores em texto, nome de puzzle ou mensagem. O medieval esta no
   desenho e na fonte, nao na historia. Todo texto gira em torno de fechar a
   janela.
-- Nunca troque o fundo branco por escuro, textura, imagem ou gradiente — nem
-  "so na minha tela". O branco e o que faz a madeira e o vidro aparecerem.
+- **Dois temas, um fundo solido por tema.** O escuro e noite: fundo escuro,
+  ceu de noite nas janelas, luzes acesas. O claro inverte: fundo branco, dia,
+  luzes apagadas. O fundo da pagina e sempre `var(--bg)` — nunca textura,
+  imagem ou gradiente, nem "so na minha tela".
+- Quem troca as cores e so o `globals.css` (`:root` = claro,
+  `:root[data-theme="dark"]` = escuro). Componente nao testa tema em JS para
+  pintar: usa as variaveis, que ja trocam sozinhas.
 
 ## 2. Stack (TRAVADO)
 
@@ -89,7 +95,9 @@ componente ou modulo = PR recusado.
 - Vidro: `--glass-deep --glass --glass-light --glass-shine`
 - Metal: `--iron-dark --iron --iron-light --gold --gold-light`
 - Cenario: `--sky --sky-deep --sun --hill --hill-dark --stone --stone-dark --night`
-- Resto: `--paper --ink --blood`
+- Fundo e texto sobre o fundo: `--bg --bg-ink --bg-ink-soft` (trocam com o tema)
+- Fogo, pele, noite: `--flame --skin --star --window-lit`
+- Resto: `--paper --ink --blood` (`--paper` e branco fixo: texto claro sobre madeira)
 
 Precisa de um tom que nao existe? Acrescente a variavel em `globals.css` no
 mesmo PR, com nome no mesmo padrao, e use a variavel.
@@ -234,8 +242,12 @@ O que continua valendo dentro da sua janela, sem excecao:
 6. **Perspectiva** — se a sua janela e 3D em CSS, a camera e a do palco
    (`.slot`). Nao declare `perspective` propria. Em `<canvas>`/WebGL a camera e
    sua, porque o palco nao alcanca o contexto do canvas.
-7. **Fundo** — o palco continua branco. Sua janela desenha a si mesma, nao
-   pinta a tela inteira.
+7. **Fundo e tema** — o palco e `var(--bg)`. Sua janela desenha a si mesma,
+   nao pinta a tela inteira. Ela precisa funcionar **nos dois temas**: noite
+   no escuro, dia no claro. As variaveis de cenario (`--sky`, `--sun`,
+   `--hill`...) ja trocam sozinhas; detalhe so de noite (estrela, lua, luz
+   acesa, chama) vai em `:global([data-theme="dark"]) .suaClasse`. Luz e
+   fogo **apagam** no claro.
 
 Regra de bolso: de longe, o jogo e sempre o mesmo. De perto, cada janela e de
 quem a fez.
@@ -379,7 +391,7 @@ Repositorio aberto. Fluxo:
 
 ### Checklist (o revisor usa esta lista)
 
-- [ ] Fundo branco intacto
+- [ ] Fundo e `var(--bg)`; a tela e a janela funcionam nos dois temas
 - [ ] Nenhuma cor literal — tudo em variavel CSS
 - [ ] Moldura sem `border-radius`, sem blur, sem gradiente suave
 - [ ] Moldura toda em multiplo de 4px

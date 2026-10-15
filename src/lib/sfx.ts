@@ -127,6 +127,13 @@ export const sfx = {
     ping(ctx, "triangle", 150, 55, 0.16, 0.22);
   },
 
+  /** Fruta batendo na madeira. */
+  plop() {
+    const ctx = audio();
+    if (!ctx) return;
+    ping(ctx, "triangle", 520, 180, 0.09, 0.18);
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

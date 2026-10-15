@@ -27,6 +27,10 @@
   --ink: #2b1a0e;
   --blood: #8e2b1f;
 
+  /* Fogo das tochas e pele dos bonecos */
+  --flame: #e8702a;
+  --skin: #e9b38c;
+
   --px: 4px;
   --font-title: var(--font-title-loaded), "Jacquard 12", serif;
   --font-ui: var(--font-ui-loaded), "Press Start 2P", monospace;

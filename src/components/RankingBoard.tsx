@@ -48,7 +48,7 @@ export default function RankingBoard({ rows, username }: Props) {
         </ol>
       )}
 
-      <p className={styles.footer}>pontos = soma do esforco das janelas abertas</p>
+      <p className={styles.footer}>pontos = soma do esforco para fechar as janelas</p>
     </aside>
   );
 }

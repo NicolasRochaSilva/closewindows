@@ -142,7 +142,7 @@
   background: var(--night);
 }
 
-/* ---------- A folha que abre ---------- */
+/* ---------- A folha: comeca aberta e fecha ---------- */
 .leaf {
   position: absolute;
   top: 88px;
@@ -151,6 +151,8 @@
   height: 320px;
   transform-origin: left center;
   transform-style: preserve-3d;
+  /* Quem recebe o clique e o .closeHit; a folha girada nao rouba o alvo. */
+  pointer-events: none;
   background: var(--wood);
   box-shadow:
     0 0 0 4px var(--wood-shadow),
@@ -248,7 +250,6 @@
   width: 56px;
   height: 80px;
   margin-top: -40px;
-  background: none;
 }
 
 .latchPlate {
@@ -286,10 +287,24 @@
     0 0 0 4px var(--wood-shadow);
 }
 
-.latch:focus-visible .latchPlate {
-  box-shadow:
-    0 0 0 4px var(--gold-light),
-    inset 4px 4px 0 0 var(--iron-light);
+/* Alvo do clique: a janela inteira (a folha tem pointer-events: none). */
+.closeHit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 252px;
+  height: 440px;
+  background: none;
+  cursor: pointer;
+}
+
+.closeHit:disabled {
+  cursor: default;
+}
+
+.closeHit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--gold-light);
 }
 
 /* Peitoril */

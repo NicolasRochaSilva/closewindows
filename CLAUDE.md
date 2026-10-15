@@ -28,6 +28,7 @@
 | Letreiro | `close` + **janela** + `Windows`, nessa ordem, com a janela no meio |
 | Fundo | **branco puro** (`--paper`) em toda e qualquer tela |
 | Tema | **fechar a janela** — um meme interno. Medieval e so o estilo |
+| Estado inicial | **toda janela comeca aberta**; vencer e fecha-la (ver 6, Contrato) |
 | Quem joga | **fechador** (nunca morador, aldeao, cidadao) |
 | Estilo da moldura | pixel art 16 bits, medieval |
 | Estilo da janela | livre por puzzle (ver 6.1) |
@@ -137,7 +138,7 @@ As animacoes sao o que o jogo vende. Padrao obrigatorio:
 4. Movimento em pixel anda em pixel: desloque em multiplos de 4px.
 5. `transform` e `opacity` apenas. Nao anime `width`, `height`, `top`, `left`
    ou `margin` (fora de `height: auto` em `AnimatePresence`).
-6. Quem abre em 3D herda a perspectiva do palco (`.slot` em
+6. Quem fecha em 3D herda a perspectiva do palco (`.slot` em
    `Gallery.module.css`). **Nao declare `perspective` dentro do puzzle.**
 7. Toda animacao respeita `prefers-reduced-motion` (ja tratado no
    `globals.css`; nao use `!important` para furar isso).
@@ -183,12 +184,18 @@ fora da sua pasta e tocado por um PR de puzzle.
 
 ```ts
 type PuzzleProps = {
-  onSolved: () => void;      // chame UMA vez, quando a janela terminar de abrir
-  alreadySolved: boolean;    // o jogador ja venceu essa janela antes
+  onSolved: () => void;      // chame UMA vez, quando a janela terminar de FECHAR
+  alreadySolved: boolean;    // o jogador ja fechou essa janela antes
 };
 ```
 
-- `onSolved()` e chamado **no fim da animacao**, nao no clique.
+- **Toda janela comeca ABERTA.** O desafio e sempre **fechar** a janela, nunca
+  abrir. Ao montar, o puzzle mostra a folha aberta; o jogador vence quando a
+  folha bate no batente e o trinco trava. Puzzle que comeca fechado, ou cuja
+  vitoria e abrir, e recusado.
+- Mesmo com `alreadySolved`, a janela reaparece aberta: da para fechar de novo
+  (sem pontuar, RN-05).
+- `onSolved()` e chamado **no fim da animacao de fechar**, nao no clique.
 - Chamar `onSolved()` mais de uma vez, ou sem o jogador ter resolvido, e
   trapaca: PR recusado.
 - O puzzle **nao** fala com o banco, nao faz `fetch`, nao le cookie e nao
@@ -245,7 +252,7 @@ export const manifest: PuzzleManifest = {
 };
 ```
 
-## 7. Esforco — quem decide (TRAVADO)
+## 7. Esforco para fechar — quem decide (TRAVADO)
 
 > **O campo `effort` e atribuido pelo Claude Code, nunca pelo dev.**
 
@@ -287,10 +294,10 @@ Regras de borda:
 - **RN-03** — Sessao e cookie `cw_session` `httpOnly`, JWT HS256 assinado com
   `SESSION_SECRET`, 30 dias. `/jogo` exige sessao; `/login` e `/cadastro` com
   sessao ativa redirecionam para `/jogo`.
-- **RN-04** — Ranking = **soma do esforco das janelas vencidas**. Desempate:
+- **RN-04** — Ranking = **soma do esforco para fechar das janelas fechadas**. Desempate:
   mais janelas, depois ordem alfabetica. **Nunca por tempo.** Top 10, na
   lateral direita, com a linha do jogador destacada.
-- **RN-05** — Cada par (jogador, puzzle) pontua **uma vez** (`@@unique`). Abrir
+- **RN-05** — Cada par (jogador, puzzle) pontua **uma vez** (`@@unique`). Fechar
   a mesma janela de novo nao soma nada.
 - **RN-06** — O esforco gravado vem do **manifest no servidor**
   (`src/app/api/solve/route.ts`), nunca do corpo da requisicao. O cliente manda
@@ -380,7 +387,7 @@ Repositorio aberto. Fluxo:
 - [ ] Animacao com `motion` e curvas de `src/lib/motion.ts`
 - [ ] Som so por `src/lib/sfx.ts`, sem arquivo de audio no repo
 - [ ] Sem `perspective` dentro do puzzle
-- [ ] `onSolved()` uma unica vez, no fim da animacao
+- [ ] Janela comeca aberta; `onSolved()` uma unica vez, no fim da animacao de fechar
 - [ ] Puzzle sem `fetch`, sem prisma, sem cookie
 - [ ] Jogavel por teclado, com `aria-label`
 - [ ] `effort` atribuido pelo Claude (nao pelo autor), com justificativa

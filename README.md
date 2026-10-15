@@ -1,7 +1,7 @@
 # closeWindows
 
 Jogo colaborativo de puzzles de janelas. Pixel art 16 bits, tema medieval,
-fundo branco. Cada pessoa cria a sua janela; abrir uma janela vale os pontos
+fundo branco. Cada pessoa cria a sua janela; fechar uma janela vale os pontos
 de esforco dela, e o ranking soma esses pontos.
 
 ## Rodar

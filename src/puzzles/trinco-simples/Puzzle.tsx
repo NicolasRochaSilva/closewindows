@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { PuzzleProps } from "../types";
-import { DURATION, EASE_HINGE, EASE_WOOD, hingeOpen } from "@/lib/motion";
+import { DURATION, EASE_HINGE, hingeClose } from "@/lib/motion";
 import { sfx } from "@/lib/sfx";
 import styles from "./Puzzle.module.css";
 
 /**
- * Esforco 0 — a janela tutorial. Um clique no trinco e a folha gira para
- * frente na dobradica da esquerda. A perspectiva vem do palco
- * (Gallery.module.css .slot), por isso nao ha `perspective` aqui.
+ * Esforco 0 — a janela tutorial. Ela comeca aberta, com a folha girada para
+ * frente na dobradica da esquerda. Um clique e a folha volta, bate no batente
+ * e o trinco trava. A perspectiva vem do palco (Gallery.module.css .slot),
+ * por isso nao ha `perspective` aqui.
  */
 export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
-  const [open, setOpen] = useState(false);
+  const [closed, setClosed] = useState(false);
+  const [latched, setLatched] = useState(false);
+  const reported = useRef(false);
 
   return (
     <div className={styles.window}>
@@ -42,17 +45,18 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
 
       <motion.div
         className={styles.leaf}
-        initial={false}
+        initial={{ rotateY: -104, z: 24 }}
         animate={
           /* Sem `filter` aqui: filtro achata o contexto 3D e o verso
              da folha passa a mostrar o vidro. */
-          open ? { rotateY: -104, z: 24 } : { rotateY: 0, z: 0 }
+          closed ? { rotateY: 0, z: 0 } : { rotateY: -104, z: 24 }
         }
-        transition={hingeOpen}
+        transition={hingeClose}
         onAnimationComplete={() => {
-          if (!open) return;
+          if (!closed || latched) return;
           sfx.thud();
-          onSolved();
+          sfx.latch();
+          setLatched(true);
         }}
       >
         <div className={styles.pane}>
@@ -65,41 +69,44 @@ export default function Puzzle({ onSolved, alreadySolved }: PuzzleProps) {
         <span className={`${styles.hinge} ${styles.hingeTop}`} />
         <span className={`${styles.hinge} ${styles.hingeBottom}`} />
 
-        <motion.button
-          type="button"
-          className={styles.latch}
-          onClick={() => {
-            sfx.latch();
-            sfx.creak(DURATION.swing);
-            setOpen(true);
-          }}
-          disabled={open}
-          aria-label={open ? "Trinco solto" : "Soltar o trinco"}
-          whileHover={open ? undefined : { x: -4 }}
-          whileTap={open ? undefined : { x: 4 }}
-          transition={{ duration: DURATION.snap, ease: EASE_WOOD }}
-        >
+        <span className={styles.latch}>
           <span className={styles.latchPlate} />
           <span className={styles.latchStud} />
           <motion.span
             className={styles.latchBar}
             initial={false}
-            animate={open ? { rotate: -82 } : { rotate: 0 }}
+            animate={latched ? { rotate: 0 } : { rotate: -82 }}
             transition={{ duration: DURATION.quick, ease: EASE_HINGE }}
+            onAnimationComplete={() => {
+              if (!latched || reported.current) return;
+              reported.current = true;
+              onSolved();
+            }}
           />
-        </motion.button>
+        </span>
       </motion.div>
 
       <span className={styles.sill} />
 
-      {!open && (
+      <button
+        type="button"
+        className={styles.closeHit}
+        onClick={() => {
+          sfx.creak(DURATION.swing);
+          setClosed(true);
+        }}
+        disabled={closed}
+        aria-label={closed ? "Janela fechada" : "Fechar a janela"}
+      />
+
+      {!closed && (
         <motion.p
           className={styles.hint}
           initial={{ opacity: 0.45 }}
           animate={{ opacity: [0.45, 1, 0.45] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: DURATION.swing * 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          {alreadySolved ? "solte o trinco outra vez" : "solte o trinco"}
+          {alreadySolved ? "feche a janela outra vez" : "feche a janela"}
         </motion.p>
       )}
     </div>

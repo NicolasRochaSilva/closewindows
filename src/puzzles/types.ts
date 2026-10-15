@@ -9,7 +9,7 @@ export type PuzzleManifest = {
   /** Autor (handle do GitHub). */
   author: string;
   /**
-   * Pontos do ranking. ATRIBUIDO PELO CLAUDE CODE, nunca escolhido pelo dev.
+   * Esforco para fechar = pontos do ranking. ATRIBUIDO PELO CLAUDE CODE, nunca escolhido pelo dev.
    * Rubrica em CLAUDE.md.
    */
   effort: number;
@@ -18,9 +18,9 @@ export type PuzzleManifest = {
 };
 
 export type PuzzleProps = {
-  /** Chame uma unica vez, no instante em que a janela termina de abrir. */
+  /** Chame uma unica vez, no instante em que a janela termina de FECHAR. Toda janela comeca aberta. */
   onSolved: () => void;
-  /** true quando o jogador ja abriu essa janela antes. */
+  /** true quando o jogador ja fechou essa janela antes. */
   alreadySolved: boolean;
 };
 

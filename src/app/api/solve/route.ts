@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { puzzleById } from "@/puzzles/registry";
 
-/// Registra a janela aberta. O esforco vem do manifest do servidor,
+/// Registra a janela fechada. O esforco vem do manifest do servidor,
 /// nunca do corpo da requisicao (CLAUDE.md).
 export async function POST(request: Request) {
   const session = await getSession();

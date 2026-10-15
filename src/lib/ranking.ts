@@ -8,7 +8,7 @@ export type RankRow = {
 };
 
 /**
- * Ranking = soma do esforco das janelas abertas (RN-04).
+ * Ranking = soma do esforco para fechar das janelas fechadas (RN-04).
  * Desempate: mais janelas, depois ordem alfabetica. Nunca por tempo.
  */
 export async function getRanking(limit = 10): Promise<RankRow[]> {

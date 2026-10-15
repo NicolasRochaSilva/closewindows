@@ -173,8 +173,8 @@ export default function Gallery({ username, solvedIds, ranking, startId }: Props
             <p className={styles.plaqueName}>{puzzle.name}</p>
             <div className={styles.plaqueMeta}>
               <span>por {puzzle.author}</span>
-              <span className={styles.plaqueEffort}>esforco {puzzle.effort}</span>
-              {solved.has(puzzle.id) && <span className={styles.sealed}>vencida</span>}
+              <span className={styles.plaqueEffort}>esforco para fechar {puzzle.effort}</span>
+              {solved.has(puzzle.id) && <span className={styles.sealed}>fechada</span>}
             </div>
           </motion.div>
 
@@ -198,7 +198,7 @@ export default function Gallery({ username, solvedIds, ranking, startId }: Props
             transition={panelIn}
             role="status"
           >
-            {toast.name} cedeu{" "}
+            {toast.name} fechada{" "}
             <span className={styles.toastEffort}>+{toast.effort} pts</span>
           </motion.p>
         )}

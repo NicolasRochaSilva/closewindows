@@ -1,0 +1,9 @@
+# Arquivos de deploy: so o dono altera (CLAUDE.md, secao 9 "Deploy").
+/vercel.json        @NicolasRochaSilva
+/next.config.ts     @NicolasRochaSilva
+/package.json       @NicolasRochaSilva
+/package-lock.json  @NicolasRochaSilva
+/.env.example       @NicolasRochaSilva
+/prisma/            @NicolasRochaSilva
+/.github/           @NicolasRochaSilva
+/CLAUDE.md          @NicolasRochaSilva

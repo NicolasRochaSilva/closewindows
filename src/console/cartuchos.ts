@@ -10,6 +10,7 @@ import type { Cartucho } from "./contrato";
 export const CARTUCHOS: Record<string, () => Promise<{ cartucho: Cartucho }>> = {
   "so-fechar": () => import("@/fases/so-fechar"),
   "viciado-em-maca": () => import("@/fases/viciado-em-maca"),
+  "janela-chuvosa": () => import("@/fases/janela-chuvosa"),
 };
 
 /** Carrega o cartucho de uma fase. `falhou` cobre chunk que nao baixou (rede). */

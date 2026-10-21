@@ -1,0 +1,31 @@
+/* O <Html> do drei poe top/left inline; right/bottom daqui esticam ate o conteiner da view. */
+.envoltorio {
+  right: 0;
+  bottom: 0;
+}
+
+/* Camada DOM da fase: so recebe o toque (sem rolar nem dar zoom) e guarda o foco do teclado. */
+.camada {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Alvo do teclado e do leitor de tela. Fica atras do canvas: nao precisa aparecer. */
+.botao {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -320,12 +320,13 @@
 }
 
 /* Alvo do clique: a janela inteira (a folha tem pointer-events: none). */
+/* Alvo cobre a moldura E a folha aberta, que gira para fora da moldura (a esquerda). */
 .closeHit {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 252px;
-  height: 440px;
+  left: -136px;
+  width: 388px;
+  height: 472px;
   background: none;
   cursor: pointer;
 }

@@ -13,4 +13,9 @@ export const credentialsSchema = z.object({
     .max(72, "A senha passa de 72 caracteres"),
 });
 
+/** Cadastro pede o codigo do time (TEAM_CODE no servidor). */
+export const signupSchema = credentialsSchema.extend({
+  codigo: z.string().trim().min(1, "Falta o codigo do time").max(100),
+});
+
 export type Credentials = z.infer<typeof credentialsSchema>;

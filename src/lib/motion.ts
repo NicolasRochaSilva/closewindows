@@ -14,6 +14,8 @@ export const DURATION = {
   dash: 0.7,
   rearm: 1.2,
   stroll: 1.6,
+  /* Congelamento no instante da pancada: o impacto "pesa" antes de reagir. */
+  hitStop: 0.08,
 } as const;
 
 /** Entrada de painel: chega firme e para seco, como um baú fechando. */
@@ -42,6 +44,12 @@ export const tossArc: Transition = { duration: DURATION.toss, ease: "easeOut", t
 
 /** Objeto caindo da janela. */
 export const drop: Transition = { duration: DURATION.base, ease: "easeIn" };
+
+/** Tranco da pancada: a janela inteira chacoalha em passos de 4px e assenta. */
+export const impactShake = {
+  x: [0, -8, 8, -4, 4, 0],
+  transition: { duration: DURATION.quick, ease: "linear" as const },
+};
 
 /** Tremor curto de recusa (senha errada, trinco emperrado). */
 export const shake = {

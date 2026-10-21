@@ -1,4 +1,4 @@
-# closeWindows
+# closeWindows v2
 
 Jogo colaborativo de puzzles de janelas. Pixel art 16 bits, tema medieval,
 fundo branco. Cada pessoa cria a sua janela; fechar uma janela vale os pontos

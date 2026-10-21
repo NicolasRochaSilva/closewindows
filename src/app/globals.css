@@ -37,8 +37,25 @@
   --skin: #e9b38c;
 
   --px: 4px;
+  /* Fontes pixel-medievais: ficam disponiveis para as fases que quiserem. */
   --font-title: var(--font-title-loaded), "Jacquard 12", serif;
   --font-ui: var(--font-ui-loaded), "Press Start 2P", monospace;
+
+  /* ---------- Casca (console) da v2: neutra, para as fases brilharem ---------- */
+  --shell-bg: #0b0b0e;
+  --shell-bg-raised: #15151a;
+  --shell-line: #26262d;
+  --shell-ink: #ece8e1;
+  --shell-ink-soft: #9a968e;
+  --shell-accent: #f2cc6b;
+  --shell-good: #8fd19e;
+  --shell-bad: #ef7a6a;
+  --shell-shutter: #1c1c22;
+  --shell-shutter-line: #2a2a32;
+  --shell-scrim: rgb(11 11 14 / 0.82);
+  --shell-font-display: var(--font-display-loaded), "Instrument Serif", serif;
+  --shell-font-ui: var(--font-shell-loaded), "Geist", system-ui, sans-serif;
+  --shell-font-mono: var(--font-mono-loaded), "Geist Mono", ui-monospace, monospace;
 }
 
 * {
@@ -53,19 +70,12 @@ body {
 }
 
 body {
-  background: var(--bg);
-  color: var(--bg-ink);
-  font-family: var(--font-ui);
-  font-size: 12px;
-  line-height: 1.8;
-  -webkit-font-smoothing: none;
-  image-rendering: pixelated;
-}
-
-img,
-svg {
-  image-rendering: pixelated;
-  shape-rendering: crispEdges;
+  background: var(--shell-bg);
+  color: var(--shell-ink);
+  font-family: var(--shell-font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  overscroll-behavior: none;
 }
 
 button {

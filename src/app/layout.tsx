@@ -1,40 +1,35 @@
-import type { Metadata } from "next";
-import { Jacquard_12, Press_Start_2P } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Instrument_Serif, Jacquard_12, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
-const title = Jacquard_12({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-title-loaded",
-  display: "swap",
-});
+/* Casca: serifa editorial para titulos, Geist para interface, mono para numeros. */
+const display = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"], variable: "--font-display-loaded" });
+const shell = Geist({ subsets: ["latin"], variable: "--font-shell-loaded" });
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono-loaded" });
 
-const ui = Press_Start_2P({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-ui-loaded",
-  display: "swap",
-});
+/* Pixel-medievais: herdadas da v1, usadas pelas fases que quiserem. */
+const title = Jacquard_12({ weight: "400", subsets: ["latin"], variable: "--font-title-loaded", display: "swap" });
+const ui = Press_Start_2P({ weight: "400", subsets: ["latin"], variable: "--font-ui-loaded", display: "swap" });
 
 export const metadata: Metadata = {
   title: "closeWindows",
-  description: "Feche todas as janelas. Um jogo colaborativo de puzzles em 16 bits, de estilo medieval.",
+  description: "Toda fase é fechar uma janela. Cada janela é um mundo.",
 };
 
-/* Roda antes da primeira pintura: aplica o tema salvo (padrao escuro). */
-const THEME_SCRIPT = `try{var t=localStorage.getItem("cw_theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0b0b0e",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="pt-BR"
       data-theme="dark"
-      className={`${title.variable} ${ui.variable}`}
-      suppressHydrationWarning
+      className={`${display.variable} ${shell.variable} ${mono.variable} ${title.variable} ${ui.variable}`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
       <body>{children}</body>
     </html>
   );

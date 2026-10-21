@@ -1,4 +1,4 @@
-// closeWindows — schema. Ver CLAUDE.md antes de alterar.
+// closeWindows v2 — schema. Ver docs/superpowers/specs/2026-10-21-closewindows-v2-design.md.
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,25 +9,29 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  username     String   @unique
+  id           String    @id @default(cuid())
+  username     String
+  /// Usuario em minusculas: a unicidade sem diferenciar caixa vive no banco, nao so no codigo.
+  usernameKey  String    @unique
   passwordHash String
-  createdAt    DateTime @default(now())
-  /// Janela em que o jogador parou: o jogo reabre nela (RN-13). Nulo = primeira.
-  lastPuzzleId String?
-  solves       Solve[]
+  createdAt    DateTime  @default(now())
+  attempts     Attempt[]
 }
 
-/// Uma janela fechada por um jogador. `effort` e a foto do esforco do puzzle
-/// no momento em que foi resolvido, para o ranking nao mudar se o manifest mudar.
-model Solve {
-  id       String   @id @default(cuid())
-  userId   String
-  puzzleId String
-  effort   Int
-  solvedAt DateTime @default(now())
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+/// Uma tentativa de fechar uma fase. Inicio e fim sao do relogio do SERVIDOR.
+/// `fails` = erros que a fase relatou; `score` so existe quando `closed`.
+model Attempt {
+  id        String    @id @default(cuid())
+  userId    String
+  levelId   String
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  fails     Int       @default(0)
+  closed    Boolean   @default(false)
+  timeMs    Int?
+  score     Int?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, puzzleId])
-  @@index([userId])
+  @@index([userId, levelId])
+  @@index([levelId, endedAt])
 }

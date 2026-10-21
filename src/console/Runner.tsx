@@ -26,7 +26,7 @@ type Fala = { id: number; texto: string; quem?: string };
 
 /* Respiro entre a janela travar e o resultado subir: deixa a ultima fala e a poeira assentarem. */
 const RESPIRO_MS = 1200;
-const FALA_MS = 3600;
+const FALA_MS = 3000;
 
 export const formatarTempo = (ms: number) => {
   const s = ms / 1000;
@@ -150,7 +150,8 @@ export default function Runner(props: Props) {
       },
       fala(texto, quem) {
         const id = ++proximaFala.current;
-        setFalas((atuais) => [...atuais.slice(-1), { id, texto, quem }]);
+        /* Um bilhete por vez: o novo substitui o anterior, para nao entulhar a tela. */
+        setFalas([{ id, texto, quem }]);
         setTimeout(() => setFalas((atuais) => atuais.filter((f) => f.id !== id)), FALA_MS);
       },
       qualidade,
@@ -215,7 +216,7 @@ export default function Runner(props: Props) {
       </header>
 
       <div className={styles.falas} aria-live="polite">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {falas.map((f) => (
             <motion.p
               key={f.id}

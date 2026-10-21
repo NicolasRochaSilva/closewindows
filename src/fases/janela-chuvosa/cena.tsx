@@ -123,9 +123,13 @@ export function distanciaCamera(size: { width: number; height: number }, largura
   return Math.max(altura / 2 / tanV, largura / 2 / (tanV * aspecto));
 }
 
-/** Posiciona a camera na diagonal do quarto; `dx`/`dy` sao parallax e tranco. */
-export function posicionarCamera(cam: THREE.PerspectiveCamera, distancia: number, dx = 0, dy = 0) {
+/**
+ * Posiciona a camera na diagonal do quarto; `dx`/`dy` sao parallax e tranco.
+ * O aspecto vem de `medida` (o retangulo real): o tamanho da View do drei fica velho ao girar a tela.
+ */
+export function posicionarCamera(cam: THREE.PerspectiveCamera, medida: { width: number; height: number }, distancia: number, dx = 0, dy = 0) {
   cam.fov = FOV;
+  cam.aspect = medida.width / Math.max(1, medida.height);
   cam.position.copy(ALVO).addScaledVector(DIRECAO, distancia);
   cam.position.x += dx;
   cam.position.y += dy;

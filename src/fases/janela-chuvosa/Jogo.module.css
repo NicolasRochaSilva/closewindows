@@ -1,3 +1,9 @@
+/* O <Html> do drei poe top/left inline; right/bottom daqui esticam ate o conteiner da view. */
+.envoltorio {
+  right: 0;
+  bottom: 0;
+}
+
 /* Camada DOM da fase: so recebe o toque (sem rolar nem dar zoom) e guarda o foco do teclado. */
 .camada {
   position: absolute;

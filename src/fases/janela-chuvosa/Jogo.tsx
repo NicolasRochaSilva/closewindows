@@ -71,6 +71,7 @@ export default function Jogo({ api }: { api: FaseApi }) {
   const macaneta = useRef<THREE.Group>(null);
   const alvo = useRef<THREE.Mesh>(null);
   const botao = useRef<HTMLButtonElement>(null);
+  const camada = useRef<HTMLDivElement>(null);
 
   const camAtual = useMemo(() => ({ dx: 0, dy: 0 }), []);
   const f = useMemo(() => ({
@@ -348,11 +349,13 @@ export default function Jogo({ api }: { api: FaseApi }) {
     const dx = (livre ? f.paralaxe.x * 0.12 : 0) + (Math.random() - 0.5) * 0.08 * tranco;
     const dy = (livre ? f.paralaxe.y * 0.06 : 0) + (Math.random() - 0.5) * 0.08 * tranco;
     /* Em pe (celular) aperta a largura: a cortina pode cortar, a folha nao. */
-    const distancia = distanciaCamera(size, size.width < size.height ? 1.9 : 2.5, 2.75);
+    const r = camada.current?.getBoundingClientRect();
+    const medida = r && r.width > 0 ? r : size;
+    const distancia = distanciaCamera(medida, medida.width < medida.height ? 1.9 : 2.5, 2.75);
     const suave = Math.min(1, dt * 4);
     camAtual.dx += (dx - camAtual.dx) * (tranco > 0.01 ? 1 : suave);
     camAtual.dy += (dy - camAtual.dy) * (tranco > 0.01 ? 1 : suave);
-    posicionarCamera(cam, distancia, camAtual.dx, camAtual.dy);
+    posicionarCamera(cam, medida, distancia, camAtual.dx, camAtual.dy);
   });
 
   const muitos = qualidade === "alta" ? 6000 : qualidade === "media" ? 3200 : 1300;
@@ -383,8 +386,10 @@ export default function Jogo({ api }: { api: FaseApi }) {
       </Environment>
 
       {/* Camada DOM sobre a view: recebe toque (sem rolar a pagina) e o foco do teclado. */}
-      <Html calculatePosition={(_, __, s) => [s.width / 2, s.height / 2]} fullscreen zIndexRange={[1, 0]}>
+      {/* Preenche o conteiner por CSS (nao pelo tamanho da View, que fica velho ao girar a tela). */}
+      <Html calculatePosition={() => [0, 0]} wrapperClass={styles.envoltorio} style={{ inset: 0 }} zIndexRange={[1, 0]}>
         <div
+          ref={camada}
           className={styles.camada}
           onPointerDown={agarrar}
           onPointerMove={mover}

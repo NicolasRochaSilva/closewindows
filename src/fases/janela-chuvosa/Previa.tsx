@@ -52,7 +52,7 @@ export default function Previa({ qualidade }: { qualidade: Qualidade }) {
     }
     if (folha.current) folha.current.rotation.y = f.ang;
 
-    posicionarCamera(camera as THREE.PerspectiveCamera, distanciaCamera(size, 2.2, 2.3));
+    posicionarCamera(camera as THREE.PerspectiveCamera, size, distanciaCamera(size, 2.2, 2.3));
   });
 
   return (

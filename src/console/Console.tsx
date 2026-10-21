@@ -112,7 +112,8 @@ export default function Console({ usuario: inicial }: { usuario: string | null }
                 qualidade={qualidade}
                 onJogar={jogar}
                 onCampanha={() => {
-                  const id = proximaDaCampanha();
+                  /* Progresso ainda carregando: a campanha sempre comeca pela primeira fase. */
+                  const id = proximaDaCampanha() ?? FASES.find((f) => !f.emObras)?.id;
                   if (id) jogar(id, false);
                 }}
                 onPlacar={() => setPlacar(true)}

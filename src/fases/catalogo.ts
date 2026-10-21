@@ -8,6 +8,7 @@
  */
 import type { FaseMeta, Mundo } from "@/console/contrato";
 import { meta as soFechar } from "./so-fechar/meta";
+import { meta as janelaDeMemoria } from "./janela-de-memoria/meta";
 
 export const MUNDOS: Mundo[] = [
   { id: "basico", nome: "O Básico", ordem: 1 },
@@ -32,7 +33,7 @@ export const FASES: FaseMeta[] = [
   emObras("viciado-em-maca", "basico", 2, "O Viciado em Maçã"),
   emObras("janela-chuvosa", "intemperies", 3, "A Janela Chuvosa"),
   emObras("janelas-hidra", "cabeca", 4, "As Janelas Hidra"),
-  emObras("janela-de-memoria", "cabeca", 5, "A Janela de Memória"),
+  janelaDeMemoria,
 ].sort((a, b) => a.ordem - b.ordem);
 
 export const faseMeta = (id: string) => FASES.find((f) => f.id === id);

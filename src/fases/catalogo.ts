@@ -17,6 +17,8 @@ export const MUNDOS: Mundo[] = [
   { id: "basico", nome: "O Básico", ordem: 1 },
   { id: "intemperies", nome: "Intempéries", ordem: 2 },
   { id: "cabeca", nome: "Cabeça", ordem: 3 },
+  /* Pixel art 16 bits medieval no estilo do Nicolas (v1): fases dungeon-like. */
+  { id: "masmorra", nome: "A Masmorra", ordem: 4 },
 ];
 
 /* Fases ainda sem cartucho entram aqui como "em obras": aparecem trancadas na parede. */
@@ -37,6 +39,9 @@ export const FASES: FaseMeta[] = [
   janelaChuvosa,
   janelasHidra,
   janelaDeMemoria,
+  emObras("seteira", "masmorra", 6, "A Seteira"),
+  emObras("cela-do-carcereiro", "masmorra", 7, "A Cela do Carcereiro"),
+  emObras("dragao-na-janela", "masmorra", 8, "O Dragão na Janela"),
 ].sort((a, b) => a.ordem - b.ordem);
 
 export const faseMeta = (id: string) => FASES.find((f) => f.id === id);

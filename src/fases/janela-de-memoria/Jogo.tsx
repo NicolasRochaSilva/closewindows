@@ -7,6 +7,7 @@ import { DURATION, EASE_WOOD } from "@/lib/motion";
 import { sfx } from "@/lib/sfx";
 import { Janelinha } from "./Janelinha";
 import { Papel } from "./Papel";
+import { serifa } from "./fonte";
 import { OBJETOS, rotulo } from "./objetos";
 import styles from "./Memoria.module.css";
 
@@ -206,7 +207,7 @@ export default function Jogo({ api }: { api: FaseApi }) {
   const camada = { layout: !calmo, transition: { duration: DURATION.swing, ease: EASE_WOOD } };
 
   return (
-    <div className={`${styles.mundo} ${calmo ? styles.calmo : ""} ${api.qualidade === "baixa" ? styles.baixa : ""}`}>
+    <div className={`${styles.mundo} ${serifa.variable} ${calmo ? styles.calmo : ""} ${api.qualidade === "baixa" ? styles.baixa : ""}`}>
       <Papel qualidade={api.qualidade} />
 
       <header className={styles.placa}>

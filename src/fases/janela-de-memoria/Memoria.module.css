@@ -15,6 +15,9 @@
   --ferrugem: #b8743f;
   /* Arco do alto da janela: raio = meia largura numa caixa 3:4. */
   --arco: 50% 50% 2px 2px / 37.5% 37.5% 2px 2px;
+  /* Espaco da HUD do console (em celular ela ocupa duas linhas) e das falas embaixo. */
+  --topo: 96px;
+  --pe: 112px;
 
   position: absolute;
   inset: 0;
@@ -24,12 +27,18 @@
   align-items: center;
   justify-content: center;
   gap: clamp(12px, 3vh, 32px);
-  padding: calc(88px + env(safe-area-inset-top)) 16px calc(112px + env(safe-area-inset-bottom));
+  padding: calc(var(--topo) + env(safe-area-inset-top)) 16px calc(var(--pe) + env(safe-area-inset-bottom));
   color: var(--papel);
   background: var(--azul-fundo);
-  font-family: var(--shell-font-display), "Instrument Serif", Georgia, serif;
+  font-family: var(--memoria-serifa), "Instrument Serif", Georgia, serif;
   user-select: none;
   -webkit-user-select: none;
+}
+
+@media (max-width: 720px) {
+  .mundo {
+    --topo: 132px;
+  }
 }
 
 /* ---------- O papel ---------- */
@@ -145,7 +154,7 @@
 .estado {
   min-height: 1.5em;
   margin: 10px 0 0;
-  font-family: var(--shell-font-mono), ui-monospace, monospace;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
   font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -154,7 +163,7 @@
 
 /* ---------- A grade de janelas ---------- */
 .grade {
-  --lado: min(22vw, calc((100dvh - 296px) / 2 * 0.75));
+  --lado: min(22vw, calc((100dvh - var(--topo) - var(--pe) - 96px) / 2 * 0.75));
   position: relative;
   z-index: 1;
   display: grid;
@@ -164,7 +173,7 @@
 
 @media (max-aspect-ratio: 4/5) {
   .grade {
-    --lado: min(35vw, calc((100dvh - 316px) / 3 * 0.75));
+    --lado: min(35vw, calc((100dvh - var(--topo) - var(--pe) - 116px) / 3 * 0.75));
     grid-template-columns: repeat(2, var(--lado));
     column-gap: 11vw;
   }
@@ -349,7 +358,7 @@
   bottom: -26px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: var(--shell-font-mono), ui-monospace, monospace;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
   font-size: 11px;
   letter-spacing: 0.1em;
   opacity: 0.45;
@@ -368,12 +377,12 @@
   z-index: 2;
   display: grid;
   place-items: center;
-  padding: calc(128px + env(safe-area-inset-top)) 16px calc(112px + env(safe-area-inset-bottom));
+  padding: calc(var(--topo) + 72px + env(safe-area-inset-top)) 16px calc(var(--pe) + env(safe-area-inset-bottom));
   pointer-events: none;
 }
 
 .celaFinal {
-  width: min(56vw, calc((100dvh - 290px) * 0.75));
+  width: min(56vw, calc((100dvh - var(--topo) - var(--pe) - 80px) * 0.75));
   aspect-ratio: 3 / 4;
   perspective: 1200px;
   pointer-events: auto;

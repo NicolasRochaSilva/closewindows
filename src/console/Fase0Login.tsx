@@ -8,6 +8,8 @@ import type { Qualidade } from "./contrato";
 import { api, ErroApi } from "./cliente";
 import { sfx } from "@/lib/sfx";
 import { DURATION } from "@/lib/motion";
+import { enquadrar } from "./enquadramento";
+import CapaLogin from "./CapaLogin";
 import styles from "./console.module.css";
 
 /*
@@ -38,7 +40,6 @@ const COR = {
   ferro: "#2b2b31",
   ceuTopo: "#0a0f24",
   ceuBase: "#2a2350",
-  lua: "#f3ecd2",
   predio: "#0d0d14",
   luzAcesa: "#f2cc6b",
   lampada: "#ffd2a1",
@@ -205,11 +206,13 @@ function Cena({ qualidade, reduzirMovimento, estado, chacoalho, onBateu, camada,
   const [disparoPoeira, setDisparoPoeira] = useState(0);
   const { size } = useThree();
 
-  /* Enquadramento: cabe a janela inteira na altura OU na largura (celular em pe). */
-  const aspecto = size.width / size.height;
-  const tanMeio = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
-  const distancia = Math.max((VAO_A / 2 + 0.9) / tanMeio, (VAO_L / 2 + 0.55) / (tanMeio * aspecto));
-  const pxPorUnidade = size.height / (2 * distancia * tanMeio);
+  /* Enquadramento: a janela inteira cabe no lado (ou embaixo) da capa. */
+  const { distancia, pxPorUnidade, desvioX, desvioY } = enquadrar(
+    size.width,
+    size.height,
+    { altura: VAO_A + 1.3, largura: VAO_L + 0.5 },
+    Math.tan(THREE.MathUtils.degToRad(FOV / 2)),
+  );
 
   useEffect(() => {
     if (chacoalho) fisica.current.chacoalho = 1;
@@ -246,27 +249,23 @@ function Cena({ qualidade, reduzirMovimento, estado, chacoalho, onBateu, camada,
     /* Camera: leve parallax com o ponteiro + tranco da pancada. */
     f.tremor = Math.max(0, f.tremor - passo * 3.5);
     const tranco = f.tremor * f.tremor;
-    const px = reduzirMovimento ? 0 : state.pointer.x * 0.22;
-    const py = reduzirMovimento ? 0 : state.pointer.y * 0.14;
+    const px = desvioX + (reduzirMovimento ? 0 : state.pointer.x * 0.22);
+    const py = desvioY + (reduzirMovimento ? 0 : state.pointer.y * 0.14);
     const cam = camera.current;
     cam.position.x += (px - cam.position.x) * Math.min(1, passo * 3) + (Math.random() - 0.5) * 0.12 * tranco;
     cam.position.y += (py - cam.position.y) * Math.min(1, passo * 3) + (Math.random() - 0.5) * 0.12 * tranco;
     cam.position.z = distancia;
-    cam.lookAt(0, 0, 0);
+    cam.lookAt(desvioX, desvioY, 0);
   });
 
   return (
     <>
-      <PerspectiveCamera ref={camera} makeDefault fov={FOV} position={[0, 0, distancia]} near={0.1} far={100} />
+      <PerspectiveCamera ref={camera} makeDefault fov={FOV} position={[desvioX, desvioY, distancia]} near={0.1} far={100} />
       <color attach="background" args={[COR.parede]} />
       <fog attach="fog" args={[COR.ceuBase, 18, 42]} />
 
       <Ceu />
       <Stars radius={40} depth={10} count={qualidade === "baixa" ? 600 : 1800} factor={3} fade speed={0.4} />
-      <mesh position={[3.2, 3.4, -24]}>
-        <circleGeometry args={[1.1, 48]} />
-        <meshBasicMaterial color={COR.lua} toneMapped={false} />
-      </mesh>
       <Cidade quantidade={qualidade === "baixa" ? 10 : 18} />
 
       <ambientLight intensity={0.7} color="#b9c3dd" />
@@ -292,13 +291,15 @@ function Cena({ qualidade, reduzirMovimento, estado, chacoalho, onBateu, camada,
           ))}
           <mesh>
             <planeGeometry args={[VIDRO_L, VAO_A - 0.36]} />
+            {/* Vidro fume: a cidade some atras do formulario e so aparece pela fresta. */}
             <meshPhysicalMaterial
-              color="#bcd6ff"
+              color="#13203a"
               transparent
-              opacity={0.16}
-              roughness={0.04}
-              metalness={0.1}
-              envMapIntensity={1.4}
+              opacity={0.82}
+              roughness={0.18}
+              metalness={0}
+              specularIntensity={0}
+              envMapIntensity={0.8}
               side={THREE.DoubleSide}
               depthWrite={false}
             />
@@ -406,14 +407,14 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
     sfx.slam(1);
     setTimeout(() => sfx.latch(), DURATION.hitStop * 1000);
     setEstado("fechada");
-    setTimeout(() => onEntrou(quem.current), (DURATION.swing + DURATION.base) * 1000);
+    /* Mais um respiro para o alivio dele no cartaz ser visto antes de a parede entrar. */
+    const respiro = reduzirMovimento ? 0 : DURATION.rearm;
+    setTimeout(() => onEntrou(quem.current), (DURATION.swing + DURATION.base + respiro) * 1000);
   }
 
   return (
     <>
-    <header className={styles.loginTopo}>
-      <h1 className={styles.letreiro}>Close Windows</h1>
-    </header>
+    <CapaLogin fechou={estado === "fechada"} reduzirMovimento={reduzirMovimento} />
     <div ref={camada} className={styles.camadaForm} />
     <View key={medida} className={styles.viewCheia}>
       <Cena
@@ -425,9 +426,16 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
         camada={camada}
       >
         <form className={styles.loginForm} onSubmit={enviar} data-estado={estado}>
-          <p className={styles.loginSub}>
-            {modo === "entrar" ? "Para jogar, feche esta janela." : "Conta nova. Peça o código ao time."}
-          </p>
+          {/* O deboche toma o lugar da instrucao: o vidro nao comporta os dois. */}
+          {erro ? (
+            <p className={styles.loginErro} role="alert">
+              {erro}
+            </p>
+          ) : (
+            <p className={styles.loginSub}>
+              {modo === "entrar" ? "Para jogar, feche esta janela." : "Conta nova. Peça o código ao time."}
+            </p>
+          )}
           <label className={styles.loginCampo}>
             <span>usuário</span>
             <input name="usuario" autoComplete="username" required minLength={3} maxLength={20} />
@@ -448,11 +456,6 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
               <span>código do time</span>
               <input name="codigo" autoComplete="off" required />
             </label>
-          )}
-          {erro && (
-            <p className={styles.loginErro} role="alert">
-              {erro}
-            </p>
           )}
           <button type="submit" className={styles.placa} disabled={enviando || estado !== "aberta"}>
             <span className={styles.placaTitulo}>

@@ -32,7 +32,7 @@ const ATRITO = 9;
 
 /* Paleta da cena (arte do console, nao das fases). */
 const COR = {
-  parede: "#17161c",
+  parede: "#2b303c",
   madeira: "#5a3a22",
   madeiraClara: "#7a4f2c",
   ferro: "#2b2b31",
@@ -41,7 +41,7 @@ const COR = {
   lua: "#f3ecd2",
   predio: "#0d0d14",
   luzAcesa: "#f2cc6b",
-  lampada: "#ffb36b",
+  lampada: "#ffd2a1",
   poeira: "#b8a58c",
 } as const;
 
@@ -118,7 +118,8 @@ function ParedeEMoldura() {
       ].map(([x, y, l, a], i) => (
         <mesh key={i} position={[x, y, -espessura / 2]}>
           <boxGeometry args={[l, a, espessura]} />
-          <meshStandardMaterial color={COR.parede} roughness={0.95} />
+          {/* Emissivo leve: o reboco fica ardosia como o muro da casca, mesmo com a luz quente. */}
+          <meshStandardMaterial color={COR.parede} emissive={COR.parede} emissiveIntensity={0.55} roughness={0.92} />
         </mesh>
       ))}
       {/* Moldura */}
@@ -268,9 +269,10 @@ function Cena({ qualidade, reduzirMovimento, estado, chacoalho, onBateu, camada,
       </mesh>
       <Cidade quantidade={qualidade === "baixa" ? 10 : 18} />
 
-      <ambientLight intensity={0.25} />
+      <ambientLight intensity={0.7} color="#b9c3dd" />
       <directionalLight position={[3, 4, -10]} intensity={0.6} color="#9fb4ff" />
-      <pointLight position={[-2.5, -1.2, 3.5]} intensity={14} distance={12} color={COR.lampada} />
+      <pointLight position={[-2.5, -1.2, 3.5]} intensity={18} distance={14} color={COR.lampada} />
+      <pointLight position={[2.8, 2.6, 2.5]} intensity={6} distance={9} color="#9fb4ff" />
 
       <ParedeEMoldura />
 
@@ -349,6 +351,27 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
   const quem = useRef("");
   const camada = useRef<HTMLDivElement>(null);
 
+  /*
+   * O <View> do drei le o retangulo no resize do canvas ANTES de atualiza-lo no
+   * quadro, e fica com o tamanho velho (girar o celular quebrava o enquadramento
+   * e o form). Remonta a cena quando a tela muda — nunca no meio do fechamento.
+   */
+  const [medida, setMedida] = useState(0);
+  const aberta = estado === "aberta";
+  useEffect(() => {
+    if (!aberta) return;
+    let espera = 0;
+    const mudou = () => {
+      clearTimeout(espera);
+      espera = window.setTimeout(() => setMedida((n) => n + 1), 200);
+    };
+    window.addEventListener("resize", mudou);
+    return () => {
+      clearTimeout(espera);
+      window.removeEventListener("resize", mudou);
+    };
+  }, [aberta]);
+
   const DEBOCHE: Record<number, string> = {
     401: "Nome ou senha errados. A janela lembra de você. Você não lembra dela.",
     403: "Código do time errado. Essa janela não abre para estranhos.",
@@ -388,8 +411,11 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
 
   return (
     <>
+    <header className={styles.loginTopo}>
+      <h1 className={styles.letreiro}>Close Windows</h1>
+    </header>
     <div ref={camada} className={styles.camadaForm} />
-    <View className={styles.viewCheia}>
+    <View key={medida} className={styles.viewCheia}>
       <Cena
         qualidade={qualidade}
         reduzirMovimento={reduzirMovimento}
@@ -399,11 +425,8 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
         camada={camada}
       >
         <form className={styles.loginForm} onSubmit={enviar} data-estado={estado}>
-          <p className={styles.loginMarca}>
-            close<em>Windows</em>
-          </p>
           <p className={styles.loginSub}>
-            {modo === "entrar" ? "Para jogar, feche esta janela." : "Nova conta. Precisa do código do time."}
+            {modo === "entrar" ? "Para jogar, feche esta janela." : "Conta nova. Peça o código ao time."}
           </p>
           <label className={styles.loginCampo}>
             <span>usuário</span>
@@ -431,8 +454,10 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
               {erro}
             </p>
           )}
-          <button type="submit" className={styles.botaoForte} disabled={enviando || estado !== "aberta"}>
-            {enviando ? "…" : modo === "entrar" ? "Entrar e fechar" : "Criar conta e fechar"}
+          <button type="submit" className={styles.placa} disabled={enviando || estado !== "aberta"}>
+            <span className={styles.placaTitulo}>
+              {enviando ? "Fechando…" : modo === "entrar" ? "Entrar e fechar a janela" : "Criar conta e fechar"}
+            </span>
           </button>
           <button
             type="button"
@@ -442,7 +467,7 @@ export default function Fase0Login({ qualidade, reduzirMovimento, onEntrou }: Pr
               setErro(null);
             }}
           >
-            {modo === "entrar" ? "não tenho conta" : "já tenho conta"}
+            {modo === "entrar" ? "Ainda não tenho conta" : "Já tenho conta"}
           </button>
         </form>
       </Cena>

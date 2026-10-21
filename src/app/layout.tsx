@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Jacquard_12, Press_Start_2P } from "next/font/google";
+import { Archivo, Big_Shoulders_Stencil, Jacquard_12, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
-/* Casca: serifa editorial para titulos, Geist para interface, mono para numeros. */
-const display = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"], variable: "--font-display-loaded" });
-const shell = Geist({ subsets: ["latin"], variable: "--font-shell-loaded" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono-loaded" });
+/* Casca: estencil so para o que e "pintado no muro"; Archivo para o resto. */
+const estencil = Big_Shoulders_Stencil({ subsets: ["latin"], variable: "--font-estencil-loaded" });
+const casca = Archivo({ subsets: ["latin"], variable: "--font-casca-loaded" });
 
 /* Pixel-medievais: herdadas da v1, usadas pelas fases que quiserem. */
 const title = Jacquard_12({ weight: "400", subsets: ["latin"], variable: "--font-title-loaded", display: "swap" });
@@ -20,7 +19,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0b0b0e",
+  themeColor: "#2b303c",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -28,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="pt-BR"
       data-theme="dark"
-      className={`${display.variable} ${shell.variable} ${mono.variable} ${title.variable} ${ui.variable}`}
+      className={`${estencil.variable} ${casca.variable} ${title.variable} ${ui.variable}`}
     >
       <body>{children}</body>
     </html>

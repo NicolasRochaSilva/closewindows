@@ -51,7 +51,7 @@ export default function Placar({ fases, usuario, onFechar }: { fases: FaseMeta[]
         <header className={styles.placarTopo}>
           <h2 className={styles.placarTitulo}>Placar</h2>
           <button type="button" className={styles.link} onClick={onFechar}>
-            fechar
+            Fechar
           </button>
         </header>
 
@@ -71,7 +71,7 @@ export default function Placar({ fases, usuario, onFechar }: { fases: FaseMeta[]
         </div>
 
         {falhou && <p className={styles.aviso}>Não deu para carregar o placar.</p>}
-        {!dados && !falhou && <p className={styles.mute}>carregando…</p>}
+        {!dados && !falhou && <p className={styles.mute}>Carregando…</p>}
 
         {dados && aba === "geral" && (
           <ol className={styles.tabela}>
@@ -80,7 +80,7 @@ export default function Placar({ fases, usuario, onFechar }: { fases: FaseMeta[]
               <li key={l.username} className={eu(l.username)}>
                 <span className={styles.pos}>{i + 1}</span>
                 <span className={styles.nome}>{l.username}</span>
-                <span className={styles.num}>{l.fases} fases</span>
+                <span className={styles.num}>{l.fases} {l.fases === 1 ? "fase" : "fases"}</span>
                 <span className={styles.numForte}>{l.total}</span>
               </li>
             ))}
@@ -102,7 +102,7 @@ export default function Placar({ fases, usuario, onFechar }: { fases: FaseMeta[]
                 <li key={l.username} className={eu(l.username)}>
                   <span className={styles.pos}>{i + 1}</span>
                   <span className={styles.nome}>{l.username}</span>
-                  <span className={styles.num}>{l.erros} erros</span>
+                  <span className={styles.num}>{l.erros} {l.erros === 1 ? "erro" : "erros"}</span>
                   <span className={styles.numForte}>{formatarTempo(l.timeMs)}</span>
                 </li>
               ))}
@@ -127,10 +127,10 @@ export default function Placar({ fases, usuario, onFechar }: { fases: FaseMeta[]
             </ol>
             <div className={styles.devendo}>
               <p>
-                <span className={styles.ok}>fecharam</span> {dados.dia.fecharam.join(", ") || "ninguém"}
+                <span className={styles.ok}>Fecharam hoje:</span> {dados.dia.fecharam.join(", ") || "ninguém ainda"}
               </p>
               <p>
-                <span className={styles.ruim}>devendo</span> {dados.dia.devendo.join(", ") || "ninguém 🎉"}
+                <span className={styles.ruim}>Devendo:</span> {dados.dia.devendo.join(", ") || "ninguém"}
               </p>
             </div>
           </>

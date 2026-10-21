@@ -34,6 +34,24 @@ export const formatarTempo = (ms: number) => {
   return `${min}:${(s - min * 60).toFixed(1).padStart(4, "0")}`;
 };
 
+/** Erros como riscos de giz, em grupos de cinco (quatro tracos e um corte). */
+export function Riscos({ n }: { n: number }) {
+  const grupos = Array.from({ length: Math.ceil(n / 5) }, (_, g) => Math.min(5, n - g * 5));
+  return (
+    <span className={styles.riscos} aria-label={`${n} ${n === 1 ? "erro" : "erros"}`}>
+      {n === 0 && <span className={styles.semRisco}>sem erros</span>}
+      {grupos.map((qtd, g) => (
+        <svg key={g} viewBox="0 0 30 22" className={styles.grupoRiscos} aria-hidden="true">
+          {Array.from({ length: Math.min(qtd, 4) }, (_, i) => (
+            <path key={i} d={`M${5 + i * 6} 3 L${4 + i * 6} 19`} />
+          ))}
+          {qtd === 5 && <path d="M1 15 L29 6" />}
+        </svg>
+      ))}
+    </span>
+  );
+}
+
 /** Fase com erro nao derruba o jogo: vira "essa janela emperrou". */
 class Emperrou extends Component<{ children: ReactNode; onSair: () => void }, { erro: boolean }> {
   state = { erro: false };
@@ -47,10 +65,10 @@ class Emperrou extends Component<{ children: ReactNode; onSair: () => void }, { 
     if (!this.state.erro) return this.props.children;
     return (
       <div className={styles.emperrou}>
-        <p className={styles.emperrouTitulo}>Essa janela emperrou.</p>
-        <p className={styles.mute}>Não foi culpa sua. Desta vez.</p>
-        <button type="button" className={styles.botao} onClick={this.props.onSair}>
-          Voltar à parede
+        <p className={styles.emperrouTitulo}>Essa janela emperrou</p>
+        <p className={styles.apagado}>A fase quebrou. Sua tentativa não conta.</p>
+        <button type="button" className={styles.botaoMuro} onClick={this.props.onSair}>
+          Voltar ao muro
         </button>
       </div>
     );
@@ -161,8 +179,8 @@ export default function Runner(props: Props) {
     >
       <div className={styles.palcoFase}>
         <Emperrou onSair={onSair}>
-          {falhou && <p className={styles.carregando}>Não deu para abrir essa janela. Confira a conexão.</p>}
-          {!falhou && !Jogo && <p className={styles.carregando}>abrindo a janela…</p>}
+          {falhou && <p className={styles.carregando}>Não deu para abrir essa janela. Confira a conexão e tente de novo.</p>}
+          {!falhou && !Jogo && <p className={styles.carregando}>Abrindo a janela…</p>}
           {ativo && Jogo && fase.tipo === "dom" && <Jogo api={faseApi} />}
           {ativo && Jogo && fase.tipo === "three" && (
             <View className={styles.viewCheia}>
@@ -181,20 +199,18 @@ export default function Runner(props: Props) {
       transition={{ duration: DURATION.quick, ease: EASE_WOOD }}
     >
       <header className={styles.hud}>
-        <button type="button" className={styles.hudSair} onClick={onSair} aria-label="Sair da fase">
-          ← parede
+        <button type="button" className={styles.hudVoltar} onClick={onSair} aria-label="Sair da fase e voltar ao muro">
+          Voltar ao muro
         </button>
-        <div className={styles.hudTitulo}>
-          <span className={styles.hudOrdem}>{diaria ? "janela do dia" : `fase ${fase.ordem}`}</span>
-          <span className={styles.hudNome}>{fase.nome}</span>
-        </div>
-        <div className={styles.hudNumeros}>
+        <p className={styles.hudNome}>
+          {diaria ? "Janela do dia: " : ""}
+          {fase.nome}
+        </p>
+        <div className={styles.hudPlaca}>
           <span ref={relogio} className={styles.hudTempo} aria-label="tempo">
             0:00.0
           </span>
-          <span className={styles.hudErros} aria-label={`${erros} erros`}>
-            {erros} {erros === 1 ? "erro" : "erros"}
-          </span>
+          <Riscos n={erros} />
         </div>
       </header>
 
@@ -203,13 +219,13 @@ export default function Runner(props: Props) {
           {falas.map((f) => (
             <motion.p
               key={f.id}
-              className={styles.fala}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              className={styles.bilhete}
+              initial={{ opacity: 0, y: 16, rotate: -3 }}
+              animate={{ opacity: 1, y: 0, rotate: -1 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: DURATION.quick, ease: EASE_WOOD }}
             >
-              {f.quem && <span className={styles.falaQuem}>{f.quem}</span>}
+              {f.quem && <span className={styles.bilheteQuem}>{f.quem}</span>}
               {f.texto}
             </motion.p>
           ))}
@@ -218,7 +234,7 @@ export default function Runner(props: Props) {
 
       {falhaServidor && (
         <p className={styles.aviso} role="alert">
-          O placar não registrou: {falhaServidor}
+          O placar não registrou esta tentativa: {falhaServidor}
         </p>
       )}
 
@@ -231,43 +247,46 @@ export default function Runner(props: Props) {
             transition={{ duration: DURATION.base, ease: EASE_WOOD }}
           >
             <motion.div
-              className={styles.resultadoCartao}
+              className={styles.resultadoQuadro}
               initial={{ y: 24 }}
               animate={{ y: 0 }}
               transition={{ duration: DURATION.base, ease: EASE_WOOD }}
               role="dialog"
               aria-label="Resultado"
             >
-              <p className={styles.resultadoFechou}>Fechou.</p>
+              <p className={styles.resultadoTitulo}>Fechou</p>
               {resultado ? (
                 <>
-                  <p className={styles.resultadoNota}>{resultado.nota}</p>
+                  <p className={styles.resultadoNota}>
+                    {resultado.nota}
+                    <span className={styles.resultadoPontos}>pontos</span>
+                  </p>
                   {resultado.recorde && (
-                    <p className={styles.resultadoRecorde}>{resultado.primeira ? "primeira vez" : "novo recorde"}</p>
+                    <p className={styles.carimbo}>{resultado.primeira ? "Primeira vez" : "Recorde"}</p>
                   )}
                   <dl className={styles.resultadoLinhas}>
-                    <dt>tempo</dt>
-                    <dd>{formatarTempo(resultado.timeMs)}</dd>
-                    <dt>alvo</dt>
-                    <dd>{formatarTempo(fase.tempoAlvo * 1000)}</dd>
-                    <dt>erros</dt>
-                    <dd>{resultado.erros}</dd>
+                    <dt>Tempo</dt>
+                    <dd>
+                      {formatarTempo(resultado.timeMs)} <span className={styles.apagado}>de {formatarTempo(fase.tempoAlvo * 1000)}</span>
+                    </dd>
+                    <dt>Erros</dt>
+                    <dd>{resultado.erros === 0 ? "Nenhum" : <Riscos n={resultado.erros} />}</dd>
                   </dl>
                 </>
               ) : (
-                !falhaServidor && <p className={styles.mute}>contando os pontos…</p>
+                !falhaServidor && <p className={styles.apagado}>Contando os pontos…</p>
               )}
               <div className={styles.resultadoAcoes}>
                 {props.temProxima && !diaria && (
-                  <button type="button" className={styles.botaoForte} onClick={props.onProxima}>
-                    Próxima janela
+                  <button type="button" className={styles.placa} onClick={props.onProxima}>
+                    <span className={styles.placaTitulo}>Próxima janela</span>
                   </button>
                 )}
-                <button type="button" className={styles.botao} onClick={props.onDeNovo}>
-                  De novo
+                <button type="button" className={styles.botaoMuro} onClick={props.onDeNovo}>
+                  Jogar de novo
                 </button>
-                <button type="button" className={styles.botao} onClick={onSair}>
-                  Parede
+                <button type="button" className={styles.botaoMuro} onClick={onSair}>
+                  Voltar ao muro
                 </button>
               </div>
             </motion.div>

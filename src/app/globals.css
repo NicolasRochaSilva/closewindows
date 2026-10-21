@@ -41,21 +41,34 @@
   --font-title: var(--font-title-loaded), "Jacquard 12", serif;
   --font-ui: var(--font-ui-loaded), "Press Start 2P", monospace;
 
-  /* ---------- Casca (console) da v2: neutra, para as fases brilharem ---------- */
-  --shell-bg: #0b0b0e;
-  --shell-bg-raised: #15151a;
-  --shell-line: #26262d;
-  --shell-ink: #ece8e1;
-  --shell-ink-soft: #9a968e;
-  --shell-accent: #f2cc6b;
-  --shell-good: #8fd19e;
-  --shell-bad: #ef7a6a;
-  --shell-shutter: #1c1c22;
-  --shell-shutter-line: #2a2a32;
-  --shell-scrim: rgb(11 11 14 / 0.82);
-  --shell-font-display: var(--font-display-loaded), "Instrument Serif", serif;
-  --shell-font-ui: var(--font-shell-loaded), "Geist", system-ui, sans-serif;
-  --shell-font-mono: var(--font-mono-loaded), "Geist Mono", ui-monospace, monospace;
+  /* ---------- Casca v2: "muro de demolicao" — janelas recuperadas num muro a noite ---------- */
+  --muro: #2b303c;
+  --muro-escuro: #20242e;
+  --muro-claro: #3a4150;
+  --cal: #ebe6da;            /* tinta de estencil no muro */
+  --cal-suja: #a9a497;
+  --luz: #ffc66b;            /* luz quente de janela acesa */
+  --luz-quente: #f08a3c;
+  --esmalte: #1d4f91;        /* placa de numero de casa */
+  --esmalte-borda: #f3efe4;
+  --lousa: #23352d;
+  --lousa-giz: #e4e8df;
+  --tinta-vermelha: #b23a2e;
+  --tabua: #6b5136;          /* tabuas pregadas na janela trancada */
+  --tabua-escura: #4a3826;
+  --pedra: #8d887b;          /* peitoril */
+  --fita-crepe: #e6d7a8;
+  /* Tintas das molduras: cada fase pega uma, para nenhuma janela ser igual a outra. */
+  --moldura-1: #8a5a2b;
+  --moldura-2: #2f6f6a;
+  --moldura-3: #7e2f2f;
+  --moldura-4: #b8892f;
+  --moldura-5: #5b6b7a;
+  --moldura-6: #d9d2c3;
+  --sombra-muro: rgb(10 12 18 / 0.55);
+  --veu: rgb(20 23 30 / 0.86);
+  --font-estencil: var(--font-estencil-loaded), "Big Shoulders Stencil", Impact, sans-serif;
+  --font-casca: var(--font-casca-loaded), "Archivo", system-ui, sans-serif;
 }
 
 * {
@@ -69,11 +82,18 @@ body {
   height: 100%;
 }
 
+/* Reboco do muro: ruido fino (SVG embutido) + manchas de umidade + vinheta de noite. */
 body {
-  background: var(--shell-bg);
-  color: var(--shell-ink);
-  font-family: var(--shell-font-ui);
-  font-size: 15px;
+  background-color: var(--muro);
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, transparent 40%, var(--muro-escuro) 100%),
+    radial-gradient(40% 30% at 15% 70%, rgb(255 255 255 / 0.025), transparent),
+    radial-gradient(35% 25% at 85% 35%, rgb(0 0 0 / 0.12), transparent),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: var(--cal);
+  font-family: var(--font-casca);
+  font-size: 16px;
   line-height: 1.5;
   overscroll-behavior: none;
 }

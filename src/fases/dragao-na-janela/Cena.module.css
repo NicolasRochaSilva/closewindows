@@ -1,0 +1,375 @@
+/* Fase 8 — a sala do trono. Pixel art do Nicolas: grade de 4px, sem raio, sem desfoque. */
+
+.mundo {
+  /* Paleta propria do dragao (o resto e a paleta do Nicolas em globals.css). */
+  --dragao-escuro: #1f4a33;
+  --dragao: #2f6e45;
+  --dragao-claro: #4f9a5a;
+  --dragao-ventre: #c9b77a;
+  --chifre: #e6dcc0;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Sobra de tela alem da arte: parede em cima, piso embaixo, em faixas duras. */
+  background: linear-gradient(to bottom, var(--stone-dark) 0 60%, var(--iron-dark) 60%);
+}
+
+.previa {
+  pointer-events: none;
+}
+
+.encaixe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 480px;
+  height: 440px;
+}
+
+.tremor {
+  position: absolute;
+  inset: 0;
+}
+
+.sala {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- Vao: corta a cabeca que vem de fora ---------- */
+.vao {
+  position: absolute;
+  left: 152px;
+  top: 72px;
+  width: 176px;
+  height: 216px;
+  overflow: hidden;
+}
+
+.cabeca {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.narinas {
+  opacity: 0;
+}
+
+.fumaca {
+  fill: var(--iron-light);
+  animation: sobe 0.6s steps(3) infinite;
+}
+
+@keyframes sobe {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-3px, -6px);
+  }
+}
+
+/* ---------- Folha (CSS 3D, dobradica a esquerda) ---------- */
+.palcoFolha {
+  position: absolute;
+  left: 152px;
+  top: 72px;
+  width: 176px;
+  height: 216px;
+  perspective: 1100px;
+  perspective-origin: 50% 45%;
+}
+
+.folha {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.folhaArte {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.vidro {
+  opacity: 0.5;
+}
+
+/* O verso da folha e madeira limpa. */
+.verso {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  background: var(--wood);
+  box-shadow:
+    inset 4px 4px 0 0 var(--wood-light),
+    inset -4px -4px 0 0 var(--wood-dark);
+}
+
+/* Barra do trinco: gira e trava no fim. */
+.trinco {
+  position: absolute;
+  top: 92px;
+  right: -16px;
+  width: 36px;
+  height: 8px;
+  transform-origin: 4px 4px;
+  backface-visibility: hidden;
+  background: var(--iron);
+  box-shadow:
+    inset 0 4px 0 0 var(--iron-light),
+    0 0 0 4px var(--wood-shadow);
+}
+
+/* ---------- Fogo ---------- */
+/* Trilho: acompanha o recuo da cabeca (a boca anda junto). */
+.fogoTrilho {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fogo {
+  position: absolute;
+  /* boca no canto de cima, a 200px (50 unidades) da esquerda da caixa */
+  left: -12px;
+  top: 164px;
+  width: 240px;
+  height: 240px;
+  pointer-events: none;
+  transform-origin: 200px 0;
+}
+
+.fogoArte {
+  display: block;
+}
+
+/* Quem foi pego leva a baforada mais larga. */
+.fogoForte {
+  transform: scale(1.2);
+}
+
+/* Chama em dois quadros alternados: laco decorativo, por isso @keyframes. */
+.quadroA {
+  animation: pisca 0.16s steps(1) infinite;
+}
+
+.quadroB {
+  animation: pisca 0.16s steps(1) infinite reverse;
+}
+
+@keyframes pisca {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Clarao de quem foi pego. */
+.clarao {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--flame);
+}
+
+/* Poeira do fechamento, em blocos. */
+.poeira {
+  position: absolute;
+  left: 144px;
+  top: 264px;
+  width: 192px;
+  height: 40px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.poeira span {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--stone);
+  box-shadow: 4px 4px 0 0 var(--stone-dark);
+}
+
+/* ---------- Tochas (as do Nicolas, sem desfoque) ---------- */
+.tocha {
+  position: absolute;
+  top: 96px;
+  width: 32px;
+  height: 108px;
+}
+
+.tochaEsq {
+  left: 88px;
+}
+
+.tochaDir {
+  left: 360px;
+}
+
+.suporte {
+  position: absolute;
+  top: 60px;
+  left: 4px;
+  width: 24px;
+  height: 32px;
+  background: var(--iron-dark);
+  box-shadow:
+    inset 4px 4px 0 0 var(--iron-light),
+    0 0 0 4px var(--wood-shadow);
+}
+
+.cabo {
+  position: absolute;
+  top: 28px;
+  left: 12px;
+  width: 8px;
+  height: 52px;
+  background: var(--wood-dark);
+  box-shadow: inset 4px 0 0 0 var(--wood-mid);
+}
+
+.chama {
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 24px;
+  height: 32px;
+  background: var(--flame);
+  clip-path: polygon(0 100%, 0 40%, 25% 20%, 50% 0, 66% 25%, 100% 40%, 100% 100%);
+}
+
+.miolo {
+  position: absolute;
+  bottom: 4px;
+  left: 8px;
+  width: 8px;
+  height: 16px;
+  background: var(--gold-light);
+}
+
+/* Halo em anel de blocos (o Nicolas usava blur; aqui fica duro). */
+.halo {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 56px;
+  height: 56px;
+  background: var(--flame);
+  opacity: 0.18;
+  clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0 75%, 0 25%);
+}
+
+.viva .chama {
+  animation: tremula 0.48s steps(1) infinite;
+}
+
+.viva .miolo {
+  animation: miolo 0.36s steps(1) infinite;
+}
+
+.tochaDir.viva .chama {
+  animation-delay: 0.24s;
+}
+
+@keyframes tremula {
+  0% {
+    clip-path: polygon(0 100%, 0 40%, 25% 20%, 50% 0, 66% 25%, 100% 40%, 100% 100%);
+  }
+  50% {
+    clip-path: polygon(0 100%, 0 45%, 33% 10%, 50% 25%, 75% 0, 100% 35%, 100% 100%);
+  }
+}
+
+@keyframes miolo {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, -4px);
+  }
+}
+
+/* ---------- Alvo: a janela inteira e a folha aberta ---------- */
+.alvo {
+  position: absolute;
+  left: 40px;
+  top: 16px;
+  width: 300px;
+  height: 296px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.alvo:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--gold-light);
+}
+
+.alvo[aria-disabled="true"] {
+  cursor: default;
+}
+
+/* ---------- Previa: o dragao inspira e sopra em laco lento ---------- */
+.previa .narinas {
+  animation: previaNarinas 4s steps(4) infinite;
+}
+
+.previa .fogo {
+  animation: previaFogo 4s steps(1) infinite;
+}
+
+@keyframes previaNarinas {
+  0%,
+  25% {
+    opacity: 0;
+  }
+  55%,
+  75% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes previaFogo {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0;
+  }
+}
+
+.previaParada .narinas,
+.previaParada .fogo {
+  animation: none;
+}
+
+.previaParada .fogo {
+  opacity: 0;
+}

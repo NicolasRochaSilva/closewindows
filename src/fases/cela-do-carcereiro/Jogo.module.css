@@ -1,0 +1,141 @@
+/*
+ * Grade de 4px, sem border-radius, sem blur, sombra e bloco solido (padrao do Nicolas).
+ * Respiro embaixo: e onde o console poe os bilhetes do carcereiro. Celular alto
+ * ganha mais (os controles sobem); celular baixo fica com o minimo.
+ */
+.mundo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 120px 16px clamp(24px, 100dvh - 680px, 160px);
+  overflow: hidden;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: none;
+  background: var(--iron-dark);
+}
+
+/* Celular deitado / computador: a cela na esquerda, os controles na direita. */
+@media (min-width: 768px) and (min-aspect-ratio: 1/1) {
+  .mundo {
+    flex-direction: row;
+    justify-content: center;
+    gap: 40px;
+    padding: 88px 32px 120px;
+  }
+
+  .controles {
+    flex-direction: column;
+  }
+}
+
+.tabuleiro {
+  display: grid;
+  flex: 1 1 0;
+  place-items: center;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+}
+
+.arte svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Previa na parede: so a arte, sem espaco de HUD. */
+.previa {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--iron-dark);
+}
+
+.controles {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 24px;
+}
+
+.cruz {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  grid-template-rows: repeat(3, 52px);
+  gap: 4px;
+}
+
+.cima { grid-area: 1 / 2; }
+.esq { grid-area: 2 / 1; }
+.dir { grid-area: 2 / 3; }
+.baixo { grid-area: 3 / 2; }
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Botao de madeira: afunda 4px de uma vez, sem transicao. */
+.botao {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--paper);
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--wood);
+  border: none;
+  box-shadow:
+    0 0 0 4px var(--wood-shadow),
+    inset 4px 4px 0 0 var(--wood-highlight),
+    inset -4px -4px 0 0 var(--wood-dark),
+    0 4px 0 4px var(--wood-shadow);
+  touch-action: manipulation;
+  transition: none;
+}
+
+.botao:hover:not(:disabled) {
+  background: var(--wood-mid);
+}
+
+.botao:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow:
+    0 0 0 4px var(--wood-shadow),
+    inset 4px 4px 0 0 var(--wood-dark),
+    inset -4px -4px 0 0 var(--wood-highlight);
+}
+
+.botao:focus-visible {
+  outline: 4px solid var(--gold-light);
+  outline-offset: 4px;
+}
+
+.botao:disabled {
+  cursor: not-allowed;
+  color: var(--iron-light);
+  background: var(--iron);
+  box-shadow:
+    0 0 0 4px var(--iron-dark),
+    0 4px 0 4px var(--iron-dark);
+}
+
+.seta {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.seta_baixo { transform: rotate(180deg); }
+.seta_esq { transform: rotate(-90deg); }
+.seta_dir { transform: rotate(90deg); }

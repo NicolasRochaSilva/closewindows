@@ -1,0 +1,32 @@
+/* Pixel art: nada de suavizar. Cores vem da paleta global (var(--...)) pelo Cela.tsx. */
+.svg {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* A folha gira na dobradica (borda esquerda). Aberta = espelhada contra a parede. */
+.folha {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(-1);
+}
+
+/* Previa: vento empurrando a folha aberta, devagar. */
+.balanca {
+  animation: balanca 3.2s ease-in-out infinite;
+}
+
+@keyframes balanca {
+  0%, 100% { transform: scaleX(-1); }
+  50% { transform: scaleX(-0.75); }
+}
+
+/* Chama em dois quadros, sem interpolar: pixel nao tem meio-termo. */
+.chama {
+  animation: chama 0.5s steps(1, end) infinite;
+}
+
+@keyframes chama {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}

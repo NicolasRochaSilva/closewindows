@@ -448,6 +448,29 @@ export const sfx = {
     ping(ctx, "sawtooth", 380, 70, 0.35, 0.06);
   },
 
+  /** Caixote de madeira arrastado na pedra: raspada grave e curta. */
+  arrasto() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const seconds = 0.16;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, seconds);
+    const low = ctx.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.setValueAtTime(900, now);
+    low.frequency.exponentialRampToValueAtTime(320, now + seconds);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.18, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+    source.connect(low).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    ping(ctx, "triangle", 95, 70, 0.12, 0.1);
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

@@ -1,0 +1,401 @@
+/*
+ * A Seteira: masmorra em pixel art 16 bits (estilo do Nicolas). Grade de 4px,
+ * sem border-radius, sem blur, sem gradiente suave, SVG crispEdges.
+ * Paleta da masmorra declarada aqui; o resto vem do globals.css.
+ */
+.mundo {
+  --breu: #0d0b12;
+  --chao: #2c2933;
+  --chao-claro: #3a3643;
+  --chao-junta: #1a1820;
+  --osso: #e6dfc8;
+  --osso-sombra: #a39c86;
+  --pedra-clara: #9a9a8c;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  color: var(--paper);
+  background: var(--breu);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.previa {
+  pointer-events: none;
+}
+
+/* Retrato: sala em cima, controles embaixo. Paisagem: controles a direita. */
+.layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 104px 12px max(20px, env(safe-area-inset-bottom));
+}
+
+@container (min-aspect-ratio: 1/1) {
+  .layout {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 32px;
+    /* Embaixo fica o bilhete das falas do console: a sala nao passa por baixo dele. */
+    padding: 80px max(32px, 6vw) 112px;
+  }
+}
+
+/* Recorta o zoom final da camera para nao passar por cima dos controles. */
+.palco {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Centro absoluto: a arte maior que a caixa (antes da escala) nao empurra nada. */
+.encaixe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.encaixeTopo {
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+
+.camera {
+  transform-origin: 168px 48px;
+}
+
+/* ---------- A sala ---------- */
+.sala {
+  position: relative;
+}
+
+.camada {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.peca {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.peca svg {
+  display: block;
+}
+
+.espelho {
+  transform: scaleX(-1);
+}
+
+/* Lâmina prestes a subir: o brilho pisca em passo duro. */
+.brilho svg {
+  animation: piscar 0.4s steps(1) infinite;
+}
+
+.sombra {
+  opacity: 0.55;
+}
+
+.sombra svg {
+  margin-top: 32px;
+}
+
+.sombraProxima {
+  opacity: 0.35;
+  animation: piscar 0.6s steps(1) infinite;
+}
+
+.pegada {
+  opacity: 0.7;
+}
+
+.ferido {
+  animation: piscar 0.16s steps(1) infinite;
+}
+
+@keyframes piscar {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ---------- Tochas e luz ---------- */
+.luz {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  pointer-events: none;
+}
+
+.luzLonge,
+.luzPerto {
+  position: absolute;
+}
+
+.luzLonge {
+  top: 0;
+  left: 0;
+  opacity: 0.06;
+}
+
+.luzPerto {
+  top: 56px;
+  left: 56px;
+  opacity: 0.08;
+}
+
+.luzViva {
+  animation: tremeluz 0.9s steps(1) infinite;
+}
+
+@keyframes tremeluz {
+  40% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.92;
+  }
+}
+
+.tocha {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.tocha svg {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+}
+
+.quadroA {
+  animation: quadroA 0.5s steps(1) infinite;
+}
+
+.quadroB {
+  animation: quadroB 0.5s steps(1) infinite;
+}
+
+@keyframes quadroA {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes quadroB {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Pendulo ---------- */
+.pendulo {
+  position: absolute;
+  width: 48px;
+  transform-origin: 24px 0;
+  pointer-events: none;
+}
+
+.corrente {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 8px;
+  bottom: 36px;
+  background: repeating-linear-gradient(to bottom, var(--iron) 0 8px, var(--iron-dark) 8px 12px);
+  box-shadow: inset 4px 0 0 0 var(--iron-light);
+}
+
+.penduloLamina {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* ---------- Vento ---------- */
+.vento {
+  position: absolute;
+  top: 96px;
+  left: calc(168px + var(--x));
+  width: 4px;
+  height: 16px;
+  background: var(--glass-light);
+  opacity: 0;
+  pointer-events: none;
+  animation: soprar var(--dur) steps(24) var(--d) infinite;
+}
+
+@keyframes soprar {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(var(--dx), 480px);
+    opacity: 0;
+  }
+}
+
+/* ---------- A seteira ---------- */
+.seteira {
+  position: absolute;
+  top: 0;
+  width: 48px;
+  height: 96px;
+}
+
+.seteira > svg {
+  display: block;
+}
+
+/* O vao da portinhola: 8x18 pixels de arte sobre a fenda. A camera 3D e da fase. */
+.vao {
+  position: absolute;
+  top: 20px;
+  left: 8px;
+  width: 32px;
+  height: 72px;
+  perspective: 240px;
+  perspective-origin: 50% 50%;
+}
+
+.portinhola {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform-style: preserve-3d;
+}
+
+.portinhola svg {
+  display: block;
+}
+
+.folhaChacoalha {
+  transform-origin: 0 50%;
+  animation: chacoalhar 0.3s steps(1) infinite;
+}
+
+.folhaParada {
+  transform-origin: 0 50%;
+}
+
+@keyframes chacoalhar {
+  50% {
+    transform: rotateY(8deg);
+  }
+}
+
+.ferrolho {
+  position: absolute;
+  top: 52px;
+  left: 24px;
+}
+
+.ferrolho svg {
+  display: block;
+}
+
+.poeira {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--pedra-clara);
+}
+
+/* ---------- Controles ---------- */
+.controles {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 56px);
+  gap: 4px;
+  align-self: center;
+  justify-self: center;
+}
+
+.botao {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: var(--wood);
+  box-shadow:
+    0 0 0 4px var(--wood-shadow),
+    inset 4px 4px 0 0 var(--wood-highlight),
+    inset -4px -4px 0 0 var(--wood-dark),
+    0 4px 0 4px var(--wood-shadow);
+  touch-action: manipulation;
+}
+
+/* Botao pixel afunda 4px de uma vez, sem interpolar. */
+.botao:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 0 0 4px var(--wood-shadow),
+    inset 4px 4px 0 0 var(--wood-dark),
+    inset -4px -4px 0 0 var(--wood-highlight);
+}
+
+.botao:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 4px var(--gold-light),
+    inset 4px 4px 0 0 var(--wood-highlight),
+    inset -4px -4px 0 0 var(--wood-dark);
+}
+
+.botao:disabled {
+  opacity: 0.5;
+}
+
+.botao svg {
+  display: block;
+}
+
+.cima { grid-area: 1 / 2; }
+.esquerda { grid-area: 2 / 1; }
+.esperar { grid-area: 2 / 2; background: var(--wood-dark); }
+.direita { grid-area: 2 / 3; }
+.baixo { grid-area: 3 / 2; }
+
+.esquerda svg { transform: rotate(-90deg); }
+.direita svg { transform: rotate(90deg); }
+.baixo svg { transform: rotate(180deg); }
+
+.dica {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  margin-top: 12px;
+  font-size: 8px;
+  line-height: 16px;
+  text-align: center;
+  color: var(--osso-sombra);
+}
+
+@container (max-aspect-ratio: 1/1) {
+  .dica {
+    display: none;
+  }
+}

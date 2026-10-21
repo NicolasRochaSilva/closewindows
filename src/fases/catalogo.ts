@@ -11,6 +11,7 @@ import { meta as soFechar } from "./so-fechar/meta";
 import { meta as viciadoEmMaca } from "./viciado-em-maca/meta";
 import { meta as janelaChuvosa } from "./janela-chuvosa/meta";
 import { meta as janelasHidra } from "./janelas-hidra/meta";
+import { meta as janelaDeMemoria } from "./janela-de-memoria/meta";
 
 export const MUNDOS: Mundo[] = [
   { id: "basico", nome: "O Básico", ordem: 1 },
@@ -35,7 +36,7 @@ export const FASES: FaseMeta[] = [
   viciadoEmMaca,
   janelaChuvosa,
   janelasHidra,
-  emObras("janela-de-memoria", "cabeca", 5, "A Janela de Memória"),
+  janelaDeMemoria,
 ].sort((a, b) => a.ordem - b.ordem);
 
 export const faseMeta = (id: string) => FASES.find((f) => f.id === id);

@@ -1,0 +1,459 @@
+/*
+ * Fase 5 — cianotipia. O mundo e uma copia fotografica azul-da-prussia: papel
+ * manchado de emulsao, linhas de luz, objetos como fotograma. Paleta propria.
+ */
+.mundo {
+  --azul-fundo: #0b2858;
+  --vidro: #0a2552;
+  --vidro-fundo: #061a3e;
+  --folha: #164686;
+  --papel: #eef1e6;
+  --linha: rgba(238, 241, 230, 0.82);
+  --linha-fraca: rgba(238, 241, 230, 0.22);
+  --sombra: rgba(2, 10, 30, 0.7);
+  --queimado: #f3dfb7;
+  --ferrugem: #b8743f;
+  /* Arco do alto da janela: raio = meia largura numa caixa 3:4. */
+  --arco: 50% 50% 2px 2px / 37.5% 37.5% 2px 2px;
+  /* Espaco da HUD do console (em celular ela ocupa duas linhas) e das falas embaixo. */
+  --topo: 96px;
+  --pe: 112px;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vh, 32px);
+  padding: calc(var(--topo) + env(safe-area-inset-top)) 16px calc(var(--pe) + env(safe-area-inset-bottom));
+  color: var(--papel);
+  background: var(--azul-fundo);
+  font-family: var(--memoria-serifa), "Instrument Serif", Georgia, serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (max-width: 720px) {
+  .mundo {
+    --topo: 132px;
+  }
+}
+
+/* ---------- O papel ---------- */
+.papel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 28% 18%, #22589c 0%, transparent 55%),
+    radial-gradient(80% 70% at 85% 95%, var(--vidro-fundo) 0%, transparent 60%),
+    radial-gradient(60% 50% at 72% 30%, rgba(60, 120, 190, 0.35), transparent 70%),
+    linear-gradient(160deg, #15427f, var(--azul-fundo));
+}
+
+/* Faixa de luz atravessando o papel devagar, como no banho de revelacao. */
+.luz {
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(115deg, transparent 40%, rgba(220, 235, 255, 0.07) 48%, transparent 56%);
+  animation: luz 14s ease-in-out infinite alternate;
+}
+
+@keyframes luz {
+  from { transform: translateX(-12%); }
+  to { transform: translateX(12%); }
+}
+
+/* A cabeca em dupla exposicao: as janelas moram dentro dela. */
+.cabeca {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 96%;
+  max-width: none;
+  transform: translate(-50%, -48%);
+  overflow: visible;
+  fill: none;
+  stroke: var(--papel);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.16;
+}
+
+.cabeca path {
+  vector-effect: non-scaling-stroke;
+}
+
+.cabeca .cabecaEco {
+  transform: translate(9px, 6px);
+  opacity: 0.45;
+}
+
+.grao {
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  background-size: 180px 180px;
+  opacity: 0.28;
+  mix-blend-mode: overlay;
+}
+
+.graoVivo {
+  animation: grao 0.9s steps(3) infinite;
+}
+
+@keyframes grao {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(-4%, 3%); }
+  66% { transform: translate(3%, -2%); }
+  100% { transform: translate(-2%, 4%); }
+}
+
+/* Borda escura onde o pincel de emulsao nao chegou direito. */
+.borda {
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 14vmin var(--sombra),
+    inset 0 0 2px 1px rgba(2, 10, 30, 0.5);
+}
+
+/* ---------- Placa: rodada e instrucao ---------- */
+.placa {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.rodadas {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 0;
+  font-size: 24px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.rodadas span {
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+
+.rodadas span[data-feita] {
+  opacity: 0.6;
+}
+
+.rodadas span[data-atual] {
+  opacity: 1;
+  text-shadow: 0 0 12px rgba(220, 235, 255, 0.7);
+}
+
+.estado {
+  min-height: 1.5em;
+  margin: 10px 0 0;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+/* ---------- A grade de janelas ---------- */
+.grade {
+  --lado: min(22vw, calc((100dvh - var(--topo) - var(--pe) - 96px) / 2 * 0.75));
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, var(--lado));
+  gap: clamp(20px, 4.5vh, 56px) clamp(32px, 7vw, 110px);
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .grade {
+    --lado: min(35vw, calc((100dvh - var(--topo) - var(--pe) - 116px) / 3 * 0.75));
+    grid-template-columns: repeat(2, var(--lado));
+    column-gap: 11vw;
+  }
+}
+
+.cela {
+  position: relative;
+  width: var(--lado);
+  aspect-ratio: 3 / 4;
+  perspective: 800px;
+}
+
+.deriva {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: deriva 7s ease-in-out infinite alternate;
+  transition: opacity 1.6s ease, filter 1.6s ease;
+}
+
+@keyframes deriva {
+  from { transform: translate3d(0, 6px, 0) rotateX(4deg) rotateY(-6deg) rotateZ(-0.6deg); }
+  to { transform: translate3d(0, -8px, 0) rotateX(-3deg) rotateY(6deg) rotateZ(0.8deg); }
+}
+
+/* No fim, as lembrancas fechadas desbotam no papel. */
+.grade[data-final] .deriva {
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.alvo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--arco);
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.alvo[aria-disabled="true"] {
+  cursor: default;
+}
+
+.alvo:focus-visible {
+  outline: 2px solid var(--papel);
+  outline-offset: 8px;
+}
+
+/* ---------- Uma janela ---------- */
+.janela {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.1, 1);
+}
+
+/* Moldura em linha de luz, com o eco fino de uma segunda exposicao. */
+.janela::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 2px solid var(--linha);
+  border-radius: var(--arco);
+  outline: 1px solid var(--linha-fraca);
+  outline-offset: 5px;
+  box-shadow: 0 22px 44px -14px var(--sombra);
+  pointer-events: none;
+}
+
+.janela[data-revelando] {
+  transform: translateZ(28px) scale(1.03);
+}
+
+.vidro {
+  position: absolute;
+  inset: 7%;
+  overflow: hidden;
+  border-radius: var(--arco);
+  background: radial-gradient(circle at 50% 40%, #173f80, var(--vidro) 75%);
+  box-shadow: inset 0 0 0 1px var(--linha-fraca);
+}
+
+.brilho {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), rgba(170, 210, 255, 0.3) 35%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* A imagem latente: quase invisivel ate a luz bater. */
+.objeto {
+  position: absolute;
+  top: 24%;
+  left: 14%;
+  width: 72%;
+  height: auto;
+  color: var(--papel);
+  opacity: 0.1;
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
+.janela[data-revelando] .brilho {
+  opacity: 1;
+  transition-duration: 0.12s;
+}
+
+.janela[data-revelando] .objeto {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 18px rgba(190, 225, 255, 0.8));
+  transition-duration: 0.12s;
+}
+
+.baixa .janela[data-revelando] .objeto {
+  filter: none;
+}
+
+/* Folhas venezianas: ripas de luz sobre azul, abrindo para fora. */
+.folha {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 50%;
+  border: 1.5px solid var(--linha);
+  background-color: var(--folha);
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 7px, rgba(238, 241, 230, 0.32) 7px 8px),
+    linear-gradient(to right, rgba(2, 10, 30, 0.28), transparent 45%);
+  transform-style: preserve-3d;
+}
+
+.folhaE {
+  left: 0;
+  transform-origin: left center;
+  border-radius: 100% 0 0 2px / 37.5% 0 0 2px;
+}
+
+.folhaD {
+  right: 0;
+  transform-origin: right center;
+  border-radius: 0 100% 2px 0 / 0 37.5% 2px 0;
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 7px, rgba(238, 241, 230, 0.32) 7px 8px),
+    linear-gradient(to left, rgba(2, 10, 30, 0.28), transparent 45%);
+}
+
+/* Superexposicao: clarao branco que queima em sepia e some. */
+.queima {
+  position: absolute;
+  inset: -4%;
+  z-index: 4;
+  border-radius: var(--arco);
+  background: radial-gradient(circle at 50% 45%, #fffdf4 0%, var(--queimado) 40%, var(--ferrugem) 85%, transparent 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  animation: queima 1.3s ease-out;
+}
+
+@keyframes queima {
+  0% { opacity: 0; transform: scale(0.96); }
+  8% { opacity: 1; transform: scale(1.05); }
+  35% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+.tecla {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  opacity: 0.45;
+}
+
+@media (pointer: coarse) {
+  .tecla {
+    display: none;
+  }
+}
+
+/* ---------- A janela final ---------- */
+.palcoFinal {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--topo) + 72px + env(safe-area-inset-top)) 16px calc(var(--pe) + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.celaFinal {
+  width: min(56vw, calc((100dvh - var(--topo) - var(--pe) - 80px) * 0.75));
+  aspect-ratio: 3 / 4;
+  perspective: 1200px;
+  pointer-events: auto;
+}
+
+.grande .objeto {
+  opacity: 0.2;
+}
+
+.grande::before {
+  border-width: 3px;
+  outline-offset: 9px;
+}
+
+.trinco {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  z-index: 5;
+  width: 18%;
+  height: 2.4%;
+  min-height: 6px;
+  margin-left: -3%;
+  border-radius: 3px;
+  background: var(--papel);
+  box-shadow: 0 0 12px rgba(220, 235, 255, 0.7);
+  transform-origin: 16% 50%;
+}
+
+/* ---------- Movimento reduzido / aparelho fraco ---------- */
+.calmo .deriva,
+.calmo .luz,
+.calmo .graoVivo {
+  animation: none;
+}
+
+.calmo .janela {
+  transition: none;
+}
+
+/* ---------- Previa na parede ---------- */
+.previa {
+  container-type: size;
+  padding: 0;
+  pointer-events: none;
+}
+
+.gradePrevia {
+  --lado: min(20cqw, 30cqh);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, var(--lado));
+  gap: 8cqh 8cqw;
+}
+
+.ciclo .objeto {
+  animation: expoe 13.2s ease-in-out calc(var(--i) * 2.2s) infinite;
+}
+
+.ciclo .brilho {
+  animation: brilha 13.2s ease-in-out calc(var(--i) * 2.2s) infinite;
+}
+
+@keyframes expoe {
+  0%, 100% { opacity: 0.1; }
+  3%, 9% { opacity: 1; }
+  16% { opacity: 0.1; }
+}
+
+@keyframes brilha {
+  0%, 100% { opacity: 0; }
+  3%, 8% { opacity: 1; }
+  15% { opacity: 0; }
+}

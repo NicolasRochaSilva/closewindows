@@ -8,6 +8,9 @@
 
 const MUTE_KEY = "cw_muted";
 
+/* Pentatonica de La (A4 a A5): qualquer sequencia soa como melodia. */
+const NOTAS = [440, 523.25, 587.33, 659.25, 783.99, 880];
+
 let context: AudioContext | null = null;
 let muted = false;
 let restored = false;
@@ -409,6 +412,40 @@ export const sfx = {
     });
     source.connect(band).connect(gain).connect(ctx.destination);
     source.start(now);
+  },
+
+  /**
+   * Sino de vidro numa escala pentatonica (`indice` 0 a 5): fundamental, um
+   * parcial inarmonico curto e uma oitava abaixo bem baixinha.
+   */
+  nota(indice: number) {
+    const ctx = audio();
+    if (!ctx) return;
+    const f = NOTAS[indice % NOTAS.length];
+    ping(ctx, "sine", f, f, 1.1, 0.14);
+    ping(ctx, "sine", f * 2.76, f * 2.76, 0.4, 0.03);
+    ping(ctx, "triangle", f / 2, f / 2, 0.6, 0.04);
+  },
+
+  /** Superexposicao: chiado claro que estoura e um zumbido caindo. */
+  queima() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const seconds = 0.4;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, seconds);
+    const high = ctx.createBiquadFilter();
+    high.type = "highpass";
+    high.frequency.value = 1800;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+    source.connect(high).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    ping(ctx, "sawtooth", 380, 70, 0.35, 0.06);
   },
 
   /** Vitoria registrada. */

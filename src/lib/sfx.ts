@@ -246,6 +246,109 @@ export const sfx = {
     ping(ctx, "triangle", 520, 180, 0.09, 0.18);
   },
 
+  /**
+   * Chuva continua: ruido em laco, chiado agudo. `muffle(true)` e a janela
+   * fechada: o grave fica, o chiado some. Quem chama tem que `stop()`.
+   */
+  rain() {
+    const ctx = audio();
+    if (!ctx) return null;
+    const now = ctx.currentTime;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 2);
+    source.loop = true;
+
+    const high = ctx.createBiquadFilter();
+    high.type = "highpass";
+    high.frequency.value = 400;
+    const low = ctx.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.value = 7000;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.07, now + 1.2);
+
+    source.connect(high).connect(low).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    return {
+      muffle(closed: boolean) {
+        const at = ctx.currentTime;
+        low.frequency.setTargetAtTime(closed ? 650 : 7000, at, 0.08);
+        gain.gain.setTargetAtTime(closed ? 0.045 : 0.07, at, 0.1);
+      },
+      stop() {
+        gain.gain.setTargetAtTime(0, ctx.currentTime, 0.1);
+        source.stop(ctx.currentTime + 0.5);
+      },
+    };
+  },
+
+  /**
+   * Vento continuo: ruido num passa-banda estreito que assobia mais agudo e
+   * mais alto conforme `strength` (0 a 1). Quem chama tem que `stop()`.
+   */
+  wind() {
+    const ctx = audio();
+    if (!ctx) return null;
+    const now = ctx.currentTime;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 2);
+    source.loop = true;
+
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 300;
+    band.Q.value = 4;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+
+    source.connect(band).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    return {
+      strength(value: number) {
+        const at = ctx.currentTime;
+        const level = Math.min(Math.max(value, 0), 1);
+        band.frequency.setTargetAtTime(260 + level * level * 900, at, 0.12);
+        band.Q.setTargetAtTime(3 + level * 9, at, 0.12);
+        gain.gain.setTargetAtTime(0.02 + level * 0.22, at, 0.08);
+      },
+      stop() {
+        gain.gain.setTargetAtTime(0, ctx.currentTime, 0.1);
+        source.stop(ctx.currentTime + 0.5);
+      },
+    };
+  },
+
+  /** Trovao: estalo seco quando perto (`near` 0 a 1), sempre o ronco grave rolando. */
+  thunder(near = 0.5) {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const level = Math.min(Math.max(near, 0), 1);
+    const seconds = 2.2 + (1 - level) * 1.4;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, seconds);
+    const low = ctx.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.setValueAtTime(380 + level * 900, now);
+    low.frequency.exponentialRampToValueAtTime(90, now + seconds);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.35 + level * 0.3, now + 0.04 + (1 - level) * 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+    source.connect(low).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    ping(ctx, "triangle", 70, 32, seconds * 0.7, 0.18 * (0.5 + level));
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

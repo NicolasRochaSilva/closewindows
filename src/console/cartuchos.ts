@@ -13,6 +13,7 @@ export const CARTUCHOS: Record<string, () => Promise<{ cartucho: Cartucho }>> = 
   "janela-chuvosa": () => import("@/fases/janela-chuvosa"),
   "janelas-hidra": () => import("@/fases/janelas-hidra"),
   "janela-de-memoria": () => import("@/fases/janela-de-memoria"),
+  seteira: () => import("@/fases/seteira"),
 };
 
 /** Carrega o cartucho de uma fase. `falhou` cobre chunk que nao baixou (rede). */

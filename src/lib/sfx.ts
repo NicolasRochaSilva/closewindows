@@ -448,6 +448,43 @@ export const sfx = {
     ping(ctx, "sawtooth", 380, 70, 0.35, 0.06);
   },
 
+  /** Passo na pedra da masmorra: ruido grave curtinho, tom varia a cada passo. */
+  passo() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 0.05);
+    const low = ctx.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.value = 500 + Math.random() * 300;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+    source.connect(low).connect(gain).connect(ctx.destination);
+    source.start(now);
+  },
+
+  /** Golpe de lâmina: chiado metalico subindo e um baque seco. */
+  golpe() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 0.18);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 8;
+    band.frequency.setValueAtTime(1800, now);
+    band.frequency.exponentialRampToValueAtTime(5200, now + 0.18);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    source.connect(band).connect(gain).connect(ctx.destination);
+    source.start(now);
+    ping(ctx, "square", 180, 60, 0.12, 0.1);
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

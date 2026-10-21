@@ -246,6 +246,25 @@ export const sfx = {
     ping(ctx, "triangle", 520, 180, 0.09, 0.18);
   },
 
+  /** Mordida na maca: tres estalos de ruido agudo, cada vez mais fracos. */
+  bite() {
+    const ctx = audio();
+    if (!ctx) return;
+    for (let i = 0; i < 3; i += 1) {
+      const at = ctx.currentTime + i * 0.045;
+      const source = ctx.createBufferSource();
+      source.buffer = noiseBuffer(ctx, 0.04);
+      const high = ctx.createBiquadFilter();
+      high.type = "highpass";
+      high.frequency.value = 1800 + i * 500;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.2 - i * 0.05, at);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
+      source.connect(high).connect(gain).connect(ctx.destination);
+      source.start(at);
+    }
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

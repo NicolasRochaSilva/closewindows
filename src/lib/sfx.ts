@@ -471,6 +471,51 @@ export const sfx = {
     ping(ctx, "triangle", 95, 70, 0.12, 0.1);
   },
 
+  /** Dragao puxando o ar: chiado que sobe de tom e de volume (ate 1s). */
+  inspira(seconds = 0.8) {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const dur = Math.min(seconds, 1);
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, dur);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.Q.value = 2;
+    band.frequency.setValueAtTime(400, now);
+    band.frequency.exponentialRampToValueAtTime(1600, now + dur);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + dur * 0.9);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    source.connect(band).connect(gain).connect(ctx.destination);
+    source.start(now);
+  },
+
+  /** Baforada de fogo: rugido grave de ruido com um rosnado de serra por baixo (ate 1s). */
+  baforada(seconds = 0.6) {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const dur = Math.min(seconds, 1);
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, dur);
+    const low = ctx.createBiquadFilter();
+    low.type = "lowpass";
+    low.frequency.setValueAtTime(1800, now);
+    low.frequency.exponentialRampToValueAtTime(300, now + dur);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.32, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    source.connect(low).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    ping(ctx, "sawtooth", 90, 55, dur, 0.07);
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();

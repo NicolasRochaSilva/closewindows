@@ -167,16 +167,6 @@
   pointer-events: none;
 }
 
-.loginTopo {
-  position: absolute;
-  top: max(20px, env(safe-area-inset-top));
-  left: clamp(16px, 4vw, 48px);
-}
-
-.loginTopo .letreiro {
-  font-size: clamp(40px, 6vw, 76px);
-}
-
 /* Onde o <Html> do formulario mora; so o form em si recebe clique. */
 .camadaForm {
   position: absolute;
@@ -189,7 +179,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 14px;
+  gap: 12px;
   color: var(--cal);
   text-shadow: 0 1px 10px rgb(0 0 0 / 0.7);
 }
@@ -214,7 +204,7 @@
 }
 
 .loginCampo input {
-  min-height: 46px;
+  min-height: 44px;
   padding: 8px 12px;
   font: inherit;
   font-size: 17px;
@@ -254,6 +244,461 @@
 .loginForm .link {
   align-self: center;
   text-shadow: none;
+}
+
+/* ---------- Capa do login: cartaz lambe-lambe colado no muro ----------
+   Cortes iguais a CAPA_LADO / CAPA_TOPO / LARGURA_DEITADA de enquadramento.ts. */
+
+.capa {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  bottom: calc(73% + 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  container-type: size;
+  pointer-events: none;
+}
+
+@media (orientation: landscape) and (min-width: 720px) {
+  .capa {
+    top: max(24px, env(safe-area-inset-top));
+    left: clamp(16px, 4vw, 56px);
+    right: calc(50% + 8px);
+    bottom: 24px;
+  }
+}
+
+/* Papel colado: sombra rente (cola, nao moldura) seguindo a borda rasgada. */
+.colado {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  container-type: inline-size;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.5)) drop-shadow(0 10px 18px rgb(10 12 18 / 0.35));
+}
+
+@media (orientation: landscape) and (min-width: 720px) {
+  .colado {
+    width: min(100cqw, 80cqh);
+    height: auto;
+    aspect-ratio: 4 / 5;
+    transform: rotate(-1.2deg);
+  }
+}
+
+.cartaz {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #e7e0cf;
+}
+
+.arte {
+  position: absolute;
+  inset: 7px;
+  overflow: hidden;
+  background: linear-gradient(#0a0f24 0%, #1c1d45 55%, #2a2350 100%);
+  /* cola escurecendo as bordas do papel */
+  box-shadow: inset 0 0 50px rgb(0 0 0 / 0.5);
+}
+
+.camada {
+  position: absolute;
+  display: block;
+  transform: translate3d(calc(var(--mx, 0) * var(--p, 0) * -1px), calc(var(--my, 0) * var(--p, 0) * -0.6px), 0);
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.1, 1);
+}
+
+.ceu {
+  inset: -4%;
+}
+
+.ceu svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lua {
+  top: 5%;
+  right: 4%;
+  width: 26%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.morroLonge {
+  left: -4%;
+  bottom: 18%;
+  width: 108%;
+  height: 30%;
+}
+
+.castelo {
+  right: 1%;
+  bottom: 20%;
+  height: 50%;
+  width: auto;
+  aspect-ratio: 400 / 460;
+  overflow: visible;
+}
+
+.morroPerto {
+  left: -4%;
+  bottom: 0;
+  width: 108%;
+  height: 27%;
+}
+
+.nevoa {
+  left: -20%;
+  right: -20%;
+  bottom: 12%;
+  height: 24%;
+  background:
+    radial-gradient(40% 50% at 30% 60%, rgb(58 65 80 / 0.55), transparent 70%),
+    radial-gradient(35% 45% at 75% 50%, rgb(58 65 80 / 0.45), transparent 70%);
+  animation: capaNevoa 14s ease-in-out infinite alternate;
+}
+
+.chao {
+  left: -4%;
+  bottom: 0;
+  width: 108%;
+  height: 22%;
+}
+
+.heroi {
+  left: 2%;
+  bottom: 3%;
+  height: 64%;
+  width: auto;
+  aspect-ratio: 260 / 420;
+}
+
+@keyframes capaNevoa {
+  to {
+    translate: 6% 0;
+  }
+}
+
+/* Janelas do castelo: algumas piscam, folhas abertas balancam no vento. */
+.pisca {
+  animation: capaPisca 5.5s steps(1) infinite;
+}
+
+@keyframes capaPisca {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+  53% {
+    opacity: 0.5;
+  }
+}
+
+.folhaEsq,
+.folhaDir {
+  transform-box: fill-box;
+  transition: transform 0.22s cubic-bezier(0.34, 0.01, 0.2, 1.06);
+}
+
+.folhaEsq {
+  transform-origin: right center;
+}
+
+.folhaDir {
+  transform-origin: left center;
+}
+
+.bate .folhaEsq,
+.bate .folhaDir {
+  animation: capaBalanco 3.2s ease-in-out infinite alternate;
+  animation-delay: inherit;
+}
+
+@keyframes capaBalanco {
+  to {
+    transform: scaleX(0.55);
+  }
+}
+
+.bandeira {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: capaBandeira 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes capaBandeira {
+  to {
+    transform: skewY(-8deg) scaleX(0.9);
+  }
+}
+
+/* A janela zero: a do login. Fecha (folhas batem) e apaga quando a folha 3D bate. */
+.janelaZero {
+  fill: var(--luz);
+  transition: fill 0.3s ease 0.18s;
+}
+
+.cartaz[data-fechou="true"] .janelaZero {
+  fill: #1b2038;
+}
+
+.cartaz[data-fechou="true"] .folhasZero .folhaEsq,
+.cartaz[data-fechou="true"] .folhasZero .folhaDir {
+  transform: scaleX(-1);
+}
+
+/* Heroi: respira parado; quando a janela fecha, ombros caem e o olhar desce pro notebook. */
+.respira {
+  transform-box: view-box;
+  transform-origin: 130px 400px;
+  animation: capaRespira 4.2s ease-in-out infinite;
+}
+
+@keyframes capaRespira {
+  50% {
+    transform: scaleY(1.008) translateY(-1px);
+  }
+}
+
+.alivia,
+.cabeca {
+  transform-box: view-box;
+  transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.1, 1) 0.15s;
+}
+
+.cabeca {
+  transform-origin: 130px 104px;
+}
+
+.cartaz[data-fechou="true"] .alivia {
+  transform: translateY(3px);
+}
+
+.cartaz[data-fechou="true"] .cabeca {
+  transform: rotate(8deg) translateX(2px);
+}
+
+.cachecol {
+  transform-box: view-box;
+  transform-origin: 112px 108px;
+  animation: capaCachecol 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes capaCachecol {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(4deg) scaleX(1.04);
+  }
+}
+
+.tela {
+  fill: #bfe6f7;
+  transition: fill 0.4s ease 0.3s;
+}
+
+.telaOk {
+  opacity: 0;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  transition:
+    opacity 0.1s ease 0.5s,
+    stroke-dashoffset 0.4s ease 0.5s;
+}
+
+.telaJanela {
+  transition: opacity 0.2s ease 0.4s;
+}
+
+.telaChao {
+  opacity: 0.16;
+  transition: opacity 0.5s ease 0.3s;
+}
+
+/* Fechou: a tela acende de vez, com um visto. E o foco dele. */
+.cartaz[data-fechou="true"] .tela {
+  fill: #eef9ff;
+}
+
+.cartaz[data-fechou="true"] .telaJanela {
+  opacity: 0;
+}
+
+.cartaz[data-fechou="true"] .telaOk {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.cartaz[data-fechou="true"] .telaChao {
+  opacity: 0.3;
+}
+
+.sopro {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 170px 76px;
+}
+
+.cartaz[data-fechou="true"] .sopro {
+  animation: capaSopro 1.5s ease-out 0.35s forwards;
+}
+
+@keyframes capaSopro {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -14px) scale(1.5);
+  }
+}
+
+/* Impresso: titulo e lore sao tinta do cartaz, por baixo da textura do papel. */
+.cartazTitulo {
+  position: absolute;
+  top: 5%;
+  left: 7%;
+  font-family: var(--font-estencil);
+  font-size: 15cqw;
+  font-weight: 800;
+  line-height: 0.84;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--cal);
+  text-shadow: 0 3px 0 rgb(10 15 36 / 0.7);
+}
+
+.cartazTitulo span {
+  display: block;
+}
+
+.cartazTitulo span:last-child {
+  color: var(--luz);
+}
+
+.cartazLore {
+  position: absolute;
+  right: 7%;
+  bottom: 6%;
+  max-width: 62%;
+  font-size: max(12px, 3.4cqw);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: right;
+  color: var(--cal);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.9);
+}
+
+.cartazLore strong {
+  display: block;
+  font-weight: 800;
+  color: var(--luz);
+}
+
+/* Celular em pe: cartaz deitado, titulo numa linha so. */
+@media not ((orientation: landscape) and (min-width: 720px)) {
+  .loginForm {
+    gap: 8px;
+  }
+
+  .loginSub {
+    font-size: 17px;
+  }
+
+  .loginErro {
+    font-size: 14px;
+  }
+
+  .loginForm .placaTitulo {
+    font-size: 16px;
+  }
+
+  .cartazTitulo {
+    top: 7%;
+    left: 4%;
+    font-size: 8.4cqw;
+  }
+
+  .cartazTitulo span {
+    display: inline;
+  }
+
+  .cartazLore {
+    right: 4%;
+    bottom: 7%;
+    max-width: 60%;
+    font-size: max(11px, 3.3cqw);
+  }
+
+  .castelo {
+    right: 6%;
+    bottom: 14%;
+    height: 72%;
+  }
+
+  .heroi {
+    left: 4%;
+    height: 76%;
+  }
+
+  .lua {
+    top: 6%;
+    right: 2%;
+    width: 18%;
+  }
+}
+
+/* Papel: fibras, rugas de cola e reticula de impressao por cima de tudo. */
+.papel {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(104deg, transparent 22%, rgb(255 255 255 / 0.07) 23%, transparent 26%),
+    linear-gradient(78deg, transparent 61%, rgb(0 0 0 / 0.18) 62%, transparent 64%),
+    linear-gradient(170deg, transparent 40%, rgb(255 255 255 / 0.05) 41%, transparent 45%),
+    radial-gradient(rgb(0 0 0 / 0.16) 0.8px, transparent 1px);
+  background-size: 160px 160px, 100% 100%, 100% 100%, 100% 100%, 4px 4px;
+  mix-blend-mode: screen;
+}
+
+/* Fita-crepe segurando os cantos de cima. */
+.fita {
+  position: absolute;
+  top: -10px;
+  width: clamp(54px, 18cqw, 92px);
+  height: 24px;
+  background: var(--fita-crepe);
+  opacity: 0.86;
+  clip-path: polygon(3% 8%, 97% 0, 100% 30%, 96% 62%, 99% 100%, 2% 94%, 0 60%, 4% 32%);
+  box-shadow: inset 0 0 6px rgb(120 100 60 / 0.4);
+}
+
+.fitaEsq {
+  left: -14px;
+  transform: rotate(-34deg);
+}
+
+.fitaDir {
+  right: -14px;
+  transform: rotate(31deg);
 }
 
 /* ---------- Muro (parede de janelas) ---------- */

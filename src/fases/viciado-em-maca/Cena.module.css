@@ -83,19 +83,19 @@
 }
 
 .placa {
-  font: 800 20px/1 var(--font-ui, system-ui), sans-serif;
+  font: 800 20px/1 system-ui, "Arial Black", "Helvetica Neue", sans-serif;
   fill: var(--papel);
   text-anchor: middle;
 }
 
 .placaNao {
-  font: 800 9px/1 var(--font-ui, system-ui), sans-serif;
+  font: 800 9px/1 system-ui, "Arial Black", "Helvetica Neue", sans-serif;
   fill: var(--tinta);
   text-anchor: middle;
 }
 
 .caixote {
-  font: 900 15px/1 var(--font-ui, system-ui), sans-serif;
+  font: 900 15px/1 system-ui, "Arial Black", "Helvetica Neue", sans-serif;
   letter-spacing: 2px;
   fill: var(--maca);
   text-anchor: middle;

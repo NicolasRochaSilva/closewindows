@@ -368,6 +368,49 @@ export const sfx = {
     ping(ctx, "triangle", 70, 32, seconds * 0.7, 0.18 * (0.5 + level));
   },
 
+  /** Vidro rachando e a coisa se partindo em duas: estalo agudo + dois tons que se afastam. */
+  split() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 0.14);
+    const high = ctx.createBiquadFilter();
+    high.type = "highpass";
+    high.frequency.value = 3200;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+    source.connect(high).connect(gain).connect(ctx.destination);
+    source.start(now);
+
+    ping(ctx, "sine", 880, 520, 0.32, 0.1);
+    ping(ctx, "sine", 880, 1320, 0.32, 0.08);
+  },
+
+  /** Riso sibilado da hidra: tres sopros de ruido, cada um mais curto. */
+  hiss() {
+    const ctx = audio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer(ctx, 0.5);
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 4200;
+    band.Q.value = 1.4;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    [0, 0.16, 0.29].forEach((at, i) => {
+      gain.gain.exponentialRampToValueAtTime(0.12 - i * 0.03, now + at + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + at + 0.12 - i * 0.02);
+    });
+    source.connect(band).connect(gain).connect(ctx.destination);
+    source.start(now);
+  },
+
   /** Vitoria registrada. */
   chime() {
     const ctx = audio();
